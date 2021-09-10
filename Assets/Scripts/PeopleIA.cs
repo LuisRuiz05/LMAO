@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class PeopleIA : MonoBehaviour
 {
@@ -11,11 +12,18 @@ public class PeopleIA : MonoBehaviour
     Animator animator;
     public Quaternion angle;
     public float range;
+    public GameObject preinteraction;
+    public PlayerHandler player;
+    //public ThirdPersonController playerController;
+
+    bool hasStolen = false;
+    bool hasGiven = false;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        preinteraction.SetActive(false);
     }
 
     // Update is called once per frame
@@ -47,6 +55,45 @@ public class PeopleIA : MonoBehaviour
                 transform.Translate(Vector3.forward * 1 * Time.deltaTime);
                 animator.SetBool("Walk", true);
                 break;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            preinteraction.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                Debug.Log("NPC Golpeado");
+                player.search += 7;
+            }
+            if (Input.GetKeyDown(KeyCode.E) && !hasStolen)
+            {
+                player.money += 1;
+                player.search += 7;
+                hasStolen = true;
+            }
+            if (Input.GetKeyDown(KeyCode.R) && !hasGiven)
+            {
+                player.money += 1;
+                hasGiven = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            preinteraction.SetActive(false);
         }
     }
 }

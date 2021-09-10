@@ -18,7 +18,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 50
+    value: -64
   intensityX:
     overrideState: 0
     value: 1
@@ -54,11 +54,11 @@ MonoBehaviour:
     overrideState: 0
     value: 12.09
   aperture:
-    overrideState: 0
-    value: 4.2
+    overrideState: 1
+    value: 6.6
   focalLength:
     overrideState: 1
-    value: 203
+    value: 115
   kernelSize:
     overrideState: 0
     value: 1
@@ -76,7 +76,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
   - {fileID: -1035862355843655106}
-  - {fileID: 7319007713676946627}
   - {fileID: 2350088213969728250}
   - {fileID: -241967312308574875}
   - {fileID: 6152700507116519209}
@@ -92,16 +91,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
   m_Name: MotionBlur
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   shutterAngle:
-    overrideState: 0
-    value: 302.72
+    overrideState: 1
+    value: 92
   sampleCount:
     overrideState: 1
-    value: 22
+    value: 14
 --- !u!114 &6152700507116519209
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -167,7 +166,7 @@ MonoBehaviour:
     value: 0
   saturation:
     overrideState: 1
-    value: 83
+    value: -26
   brightness:
     overrideState: 0
     value: 0
@@ -1413,50 +1412,3 @@ MonoBehaviour:
       - 0.5
       - 0.5
       - 0.5
---- !u!114 &7319007713676946627
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
-  m_Name: Bloom
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  intensity:
-    overrideState: 1
-    value: 8.77
-  threshold:
-    overrideState: 1
-    value: 1.2
-  softKnee:
-    overrideState: 1
-    value: 0.36
-  clamp:
-    overrideState: 0
-    value: 65472
-  diffusion:
-    overrideState: 0
-    value: 7.58
-  anamorphicRatio:
-    overrideState: 0
-    value: 0
-  color:
-    overrideState: 0
-    value: {r: 1, g: 1, b: 1, a: 1}
-  fastMode:
-    overrideState: 0
-    value: 0
-  dirtTexture:
-    overrideState: 0
-    value: {fileID: 0}
-    defaultState: 1
-  dirtIntensity:
-    overrideState: 0
-    value: 0
