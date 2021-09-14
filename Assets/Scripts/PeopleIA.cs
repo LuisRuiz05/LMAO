@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PeopleIA : MonoBehaviour
 {
     //public NavMeshAgent nav;
+    int npcHealth = 100;
     public int action;
     public float cronometer;
     Animator animator;
@@ -14,10 +15,11 @@ public class PeopleIA : MonoBehaviour
     public float range;
     public GameObject preinteraction;
     public PlayerHandler player;
-    //public ThirdPersonController playerController;
+    public Rigidbody rb;
 
     bool hasStolen = false;
     bool hasGiven = false;
+    bool isAlive = true;
 
     // Start is called before the first frame update
     void Start()
@@ -30,31 +32,35 @@ public class PeopleIA : MonoBehaviour
     void Update()
     {
         PeopleBehaviour();
+        CheckAlive(npcHealth);
     }
 
     public void PeopleBehaviour()
     {
-        cronometer += 1 * Time.deltaTime;
-        if (cronometer >= 3)
+        if (isAlive)
         {
-            action = Random.Range(0, 2);
-            cronometer = 0;
-        }
-        switch (action)
-        {
-            case 0:
-                animator.SetBool("Walk", false);
-                break;
-            case 1:
-                range = Random.Range(0, 360);
-                angle = Quaternion.Euler(0, range, 0);
-                action++;
-                break;
-            case 2:
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, 0.5f);
-                transform.Translate(Vector3.forward * 1 * Time.deltaTime);
-                animator.SetBool("Walk", true);
-                break;
+            cronometer += 1 * Time.deltaTime;
+            if (cronometer >= 3)
+            {
+                action = Random.Range(0, 2);
+                cronometer = 0;
+            }
+            switch (action)
+            {
+                case 0:
+                    animator.SetBool("Walk", false);
+                    break;
+                case 1:
+                    range = Random.Range(0, 360);
+                    angle = Quaternion.Euler(0, range, 0);
+                    action++;
+                    break;
+                case 2:
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, 0.5f);
+                    transform.Translate(Vector3.forward * 1 * Time.deltaTime);
+                    animator.SetBool("Walk", true);
+                    break;
+            }
         }
     }
 
@@ -72,28 +78,65 @@ public class PeopleIA : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                Debug.Log("NPC Golpeado");
-                player.search += 7;
+                player.search += Random.Range(4,13);
+                rb.AddForce(transform.up * 450f);
+                npcHealth -= 25;
             }
-            if (Input.GetKeyDown(KeyCode.E) && !hasStolen)
+            if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
             {
-                player.money += 1;
-                player.search += 7;
+                player.money += Random.Range(0, 50);
+                player.search += Random.Range(15,25);
                 hasStolen = true;
+                StartCoroutine(WaitForSteal());
             }
-            if (Input.GetKeyDown(KeyCode.R) && !hasGiven)
+            if (Input.GetKeyDown(KeyCode.R) && isAlive)
             {
-                player.money += 1;
-                hasGiven = true;
+                if (!hasGiven)
+                {
+                    player.money += Random.Range(0,4);
+                    hasGiven = true;
+                    StartCoroutine(WaitForGive());
+                } else
+                {
+                    player.search += Random.Range(1, 7);
+                }
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && isAlive)
         {
             preinteraction.SetActive(false);
         }
+    }
+
+    void CheckAlive(int health)
+    {
+        if (health <= 0)
+        {
+            isAlive = false;
+            animator.enabled = false;
+            StartCoroutine(WaitForDissapear());
+        }
+    }
+
+    IEnumerator WaitForGive()
+    {
+        yield return new WaitForSecondsRealtime(300);
+        hasGiven = false;
+    }
+
+    IEnumerator WaitForSteal()
+    {
+        yield return new WaitForSecondsRealtime(600);
+        hasStolen = false;
+    }
+
+    IEnumerator WaitForDissapear()
+    {
+        yield return new WaitForSecondsRealtime(15);
+        Destroy(this.gameObject);
     }
 }

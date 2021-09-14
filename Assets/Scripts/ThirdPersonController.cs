@@ -53,7 +53,7 @@ public class ThirdPersonController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            animator.Play("Punch");
+            //animator.Play("Punch");
         }
     }
 }
