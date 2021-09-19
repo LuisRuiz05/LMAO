@@ -16,6 +16,8 @@ public class PeopleIA : MonoBehaviour
     public GameObject preinteraction;
     public PlayerHandler player;
     public Rigidbody rb;
+    public GameObject fxPoint;
+    public GameObject fx;
 
     bool hasStolen = false;
     bool hasGiven = false;
@@ -49,6 +51,7 @@ public class PeopleIA : MonoBehaviour
             {
                 case 0:
                     animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
                     break;
                 case 1:
                     range = Random.Range(0, 360);
@@ -59,9 +62,16 @@ public class PeopleIA : MonoBehaviour
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, 0.5f);
                     transform.Translate(Vector3.forward * 1 * Time.deltaTime);
                     animator.SetBool("Walk", true);
+                    animator.SetBool("Run", false);
                     break;
             }
         }
+    }
+
+    void createFX()
+    {
+        GameObject createdFX = Instantiate(fx, fxPoint.transform.position,fxPoint.transform.rotation);
+        Destroy(createdFX, 2f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -79,8 +89,9 @@ public class PeopleIA : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 player.search += Random.Range(4,13);
-                rb.AddForce(transform.up * 450f);
+                rb.AddForce(transform.up * 650f);
                 npcHealth -= 25;
+                createFX();
             }
             if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
             {
@@ -118,6 +129,7 @@ public class PeopleIA : MonoBehaviour
         {
             isAlive = false;
             animator.enabled = false;
+            preinteraction.SetActive(false);
             StartCoroutine(WaitForDissapear());
         }
     }
@@ -136,7 +148,7 @@ public class PeopleIA : MonoBehaviour
 
     IEnumerator WaitForDissapear()
     {
-        yield return new WaitForSecondsRealtime(15);
+        yield return new WaitForSecondsRealtime(4);
         Destroy(this.gameObject);
     }
 }
