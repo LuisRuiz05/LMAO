@@ -119,7 +119,6 @@ public class PeopleIA : MonoBehaviour
     {
         if (other.CompareTag("Player") && isAlive)
         {
-            Debug.Log("Touching Player");
             preinteraction.SetActive(false);
         }
     }

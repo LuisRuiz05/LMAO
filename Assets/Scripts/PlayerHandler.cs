@@ -21,10 +21,14 @@ public class PlayerHandler : MonoBehaviour
     public Text searchText;
 
     private void Awake()
+    { 
+        
+    }
+
+    private void Start()
     {
         inventory = new Inventory();
         inventoryUI.SetInventory(inventory);
-
         ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Food, amount = 1 });
     }
 

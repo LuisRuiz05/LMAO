@@ -35,8 +35,9 @@ public class InventoryUI : MonoBehaviour
         foreach (Transform child in itemSlotContainer)
         {
             if (child == itemSlotTemplate) continue;
-            Destroy(child.gameObject);
-        }
+                Destroy(child.gameObject);
+            }
+        
 
         float x = -2;
         float y = 0.15f;
@@ -46,7 +47,7 @@ public class InventoryUI : MonoBehaviour
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
             itemSlotRectTransform.gameObject.SetActive(true);
 
-            itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>{
+            /*itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>{
                 //Use item
                 Debug.Log("Click");
             };
@@ -56,7 +57,7 @@ public class InventoryUI : MonoBehaviour
                 Debug.Log("Right Click");
                 inventory.RemoveItem(item);
                 ItemWorld.DropItem(playerPosition, duplicateItem);
-            };
+            };*/
 
             itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
             Image image = itemSlotRectTransform.Find("image").GetComponent<Image>();
