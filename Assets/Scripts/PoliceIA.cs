@@ -20,8 +20,6 @@ public class PoliceIA : MonoBehaviour
     public GameObject fx;
 
     int playerSearch = 0;
-    bool hasStolen = false;
-    bool hasGiven = false;
     bool isAlive = true;
 
     // Start is called before the first frame update
@@ -78,7 +76,7 @@ public class PoliceIA : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Wenos dias xd");
+
         }
     }
 
@@ -92,25 +90,6 @@ public class PoliceIA : MonoBehaviour
                 rb.AddForce(transform.up * 650f);
                 npcHealth -= 25;
                 createFX();
-            }
-            if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
-            {
-                player.money += Random.Range(0, 50);
-                player.search += Random.Range(15,25);
-                hasStolen = true;
-                StartCoroutine(WaitForSteal());
-            }
-            if (Input.GetKeyDown(KeyCode.R) && isAlive)
-            {
-                if (!hasGiven)
-                {
-                    player.money += Random.Range(0,4);
-                    hasGiven = true;
-                    StartCoroutine(WaitForGive());
-                } else
-                {
-                    player.search += Random.Range(1, 7);
-                }
             }
         }
     }
@@ -132,18 +111,6 @@ public class PoliceIA : MonoBehaviour
 
             StartCoroutine(WaitForDissapear());
         }
-    }
-
-    IEnumerator WaitForGive()
-    {
-        yield return new WaitForSecondsRealtime(300);
-        hasGiven = false;
-    }
-
-    IEnumerator WaitForSteal()
-    {
-        yield return new WaitForSecondsRealtime(600);
-        hasStolen = false;
     }
 
     IEnumerator WaitForDissapear()

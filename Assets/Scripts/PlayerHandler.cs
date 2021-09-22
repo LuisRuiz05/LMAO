@@ -11,11 +11,22 @@ public class PlayerHandler : MonoBehaviour
     public int intoxication = 0;
     public int search = 0;
 
+    public Inventory inventory;
+    [SerializeField] private InventoryUI inventoryUI;
+    public GameObject inventoryUIDisplay;
     public PostProcessVolume drunkFX;
     public bool isDrunk = false;
 
     public Text moneyText;
     public Text searchText;
+
+    private void Awake()
+    {
+        inventory = new Inventory();
+        inventoryUI.SetInventory(inventory);
+
+        ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Food, amount = 1 });
+    }
 
     // Update is called once per frame
     void Update()
@@ -30,5 +41,17 @@ public class PlayerHandler : MonoBehaviour
         }
         moneyText.text = "$" + money;
         searchText.text = "Search level: " + search.ToString();
+
+        /*if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (inventoryUIDisplay.enabled == true)
+            {
+                inventoryUIDisplay.enabled = false;
+            } else
+            {
+                inventoryUIDisplay. = true;
+            }
+        }*/
+
     }
 }
