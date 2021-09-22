@@ -29,7 +29,7 @@ public class PlayerHandler : MonoBehaviour
     {
         inventory = new Inventory();
         inventoryUI.SetInventory(inventory);
-        ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Food, amount = 1 });
+        //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
     }
 
     // Update is called once per frame

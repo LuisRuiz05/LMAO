@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ItemWorldSpawner : MonoBehaviour
 {
-    /*public Item item;
+    public Item item;
 
-    private void Awake()
+    private void Start()
     {
         ItemWorld.SpawnItemWorld(transform.position, item);
         Destroy(gameObject);
-    }*/
+    }
 }
