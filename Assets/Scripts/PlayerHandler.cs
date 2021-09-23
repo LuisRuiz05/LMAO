@@ -8,6 +8,8 @@ public class PlayerHandler : MonoBehaviour
 {
     public int money = 0;
     public int health = 100;
+    public int food = 100;
+    public int water = 100;
     public int intoxication = 0;
     public int search = 0;
 
@@ -28,15 +30,51 @@ public class PlayerHandler : MonoBehaviour
 
     private void Start()
     {
-        inventory = new Inventory();
+        inventory = new Inventory(UseItem);
         inventoryUI.SetInventory(inventory);
         inventoryUIDisplay.enabled = false;
         //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
     }
 
+    private void UseItem(Item item)
+    {
+        switch (item.itemType)
+        {
+            case Item.ItemType.Beer:
+                intoxication += 5;
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
+                break;
+            case Item.ItemType.Drugs:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
+                intoxication += 15;
+                break;
+            case Item.ItemType.Food:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
+                food += 10;
+                break;
+            case Item.ItemType.Gun:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Gun, amount = 1 });
+                break;
+            case Item.ItemType.Water:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Water, amount = 1 });
+                water += 10;
+                break;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (intoxication > 0)
+        {
+            isDrunk = true;
+        }
+        else
+        {
+            isDrunk = false;
+        }
+
+
         if (isDrunk)
         {
             drunkFX.enabled = true;

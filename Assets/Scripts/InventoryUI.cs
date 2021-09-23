@@ -9,12 +9,71 @@ public class InventoryUI : MonoBehaviour
     private Transform itemSlotContainer;
     private Transform itemSlotTemplate;
     private Vector3 playerPosition;
+    private PlayerHandler player;
+
+    int playerKeyInput = 0;
 
     private void Awake()
     {
+        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
         playerPosition = GameObject.Find("Player").transform.position;
         itemSlotContainer = transform.Find("itemSlotContainer");
         itemSlotTemplate = itemSlotContainer.Find("itemSlotTemplate");
+    }
+
+    private void Update()
+    {
+        if (player.isOpenInventory)
+        {
+            int invLen = inventory.GetItemList().Count;
+            if (Input.GetKeyDown(KeyCode.Alpha1)){
+                playerKeyInput = 0;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                playerKeyInput = 1;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                playerKeyInput = 2;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                playerKeyInput = 3;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                playerKeyInput = 4;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                playerKeyInput = 5;
+                if (playerKeyInput <= invLen - 1)
+                {
+                    inventory.UseItem(inventory.GetItemList()[playerKeyInput]);
+                }
+            }
+        }
     }
 
     public void SetInventory(Inventory inventory)
@@ -27,6 +86,7 @@ public class InventoryUI : MonoBehaviour
 
     private void Inventory_OnItemListChanged (object sender, System.EventArgs e)
     {
+        Debug.Log("Refreshing");
         RefreshInventoryItems();
     }
 
@@ -47,17 +107,15 @@ public class InventoryUI : MonoBehaviour
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
             itemSlotRectTransform.gameObject.SetActive(true);
 
-            /*itemSlotRectTransform.GetComponent<Button_UI>().ClickFunc = () =>{
-                //Use item
-                Debug.Log("Click");
-            };
+            /*
             itemSlotRectTransform.GetComponent<Button_UI>().MouseRightClickFunc = () => {
                 //Drop item
                 Item duplicateItem = new Item { itemType = item.itemType, amount = item.amount };
                 Debug.Log("Right Click");
                 inventory.RemoveItem(item);
                 ItemWorld.DropItem(playerPosition, duplicateItem);
-            };*/
+            };
+            */
 
             itemSlotRectTransform.anchoredPosition = new Vector2(x * itemSlotCellSize, y * itemSlotCellSize);
             Image image = itemSlotRectTransform.Find("image").GetComponent<Image>();

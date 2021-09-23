@@ -17,7 +17,7 @@ public class InventoryButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ThrowItem()
