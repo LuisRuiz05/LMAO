@@ -13,9 +13,10 @@ public class PlayerHandler : MonoBehaviour
 
     public Inventory inventory;
     [SerializeField] private InventoryUI inventoryUI;
-    public GameObject inventoryUIDisplay;
+    public Canvas inventoryUIDisplay;
     public PostProcessVolume drunkFX;
     public bool isDrunk = false;
+    public bool isOpenInventory = false;
 
     public Text moneyText;
     public Text searchText;
@@ -29,6 +30,7 @@ public class PlayerHandler : MonoBehaviour
     {
         inventory = new Inventory();
         inventoryUI.SetInventory(inventory);
+        inventoryUIDisplay.enabled = false;
         //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
     }
 
@@ -46,16 +48,25 @@ public class PlayerHandler : MonoBehaviour
         moneyText.text = "$" + money;
         searchText.text = "Search level: " + search.ToString();
 
-        /*if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (inventoryUIDisplay.enabled == true)
             {
+                //Close Inventory
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
                 inventoryUIDisplay.enabled = false;
+                isOpenInventory = false;
+
             } else
             {
-                inventoryUIDisplay. = true;
+                //Open Inventory
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inventoryUIDisplay.enabled = true;
+                isOpenInventory = true;
             }
-        }*/
+        }
 
     }
 }

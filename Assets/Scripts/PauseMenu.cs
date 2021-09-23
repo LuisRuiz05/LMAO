@@ -8,6 +8,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseUI;
     public AudioSource music;
     public GameObject gameUI;
+    public PlayerHandler player;
 
     // Update is called once per frame
     void Update()
