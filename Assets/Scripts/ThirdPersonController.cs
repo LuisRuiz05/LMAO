@@ -35,8 +35,6 @@ public class ThirdPersonController : MonoBehaviour
         float vAxis = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(hAxis, 0f, vAxis);
 
-        //direction.y -= gravity * Time.deltaTime;
-
         if (Input.GetKey(KeyCode.Space) && controller.isGrounded)
         {
             falling.y = jumpHeight;

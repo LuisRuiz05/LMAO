@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class PeopleIA : MonoBehaviour
 {
-    //public NavMeshAgent nav;
     int npcHealth = 100;
     public int action;
     public float cronometer;

@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 public class PoliceIA : MonoBehaviour
 {
-    //public NavMeshAgent nav;
+    public NavMeshAgent nav;
     int npcHealth = 100;
+    public Transform bulletTransform;
+    public GameObject bullet;
     public int action;
     public float cronometer;
     Animator animator;
@@ -20,24 +22,39 @@ public class PoliceIA : MonoBehaviour
     public GameObject fx;
 
     int playerSearch = 0;
+    bool isLooking = false;
     bool isAlive = true;
+    bool canShoot = true;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        nav.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        PeopleBehaviour();
+        isLookingPlayer();
+        //PeopleBehaviour();
         CheckAlive(npcHealth);
+    }
+
+    void CheckAlive(int health)
+    {
+        if (health <= 0)
+        {
+            isAlive = false;
+            animator.enabled = false;
+
+            StartCoroutine(WaitForDissapear());
+        }
     }
 
     public void PeopleBehaviour()
     {
-        if (isAlive)
+        if (isAlive && !isLooking)
         {
             cronometer += 1 * Time.deltaTime;
             if (cronometer >= 3)
@@ -66,18 +83,68 @@ public class PoliceIA : MonoBehaviour
         }
     }
 
+    void isLookingPlayer()
+    {
+        Vector3 forward = -transform.forward;
+        Vector3 playerPosition = GameObject.Find("Player").transform.position;
+        Vector3 target = (playerPosition - transform.position).normalized;
+        float distance = Vector3.Distance(playerPosition, transform.position);
+
+        if ((Vector3.Dot(forward, target) < 0.2f && distance <= 30.0f) || distance <= 4f)
+        {
+            isLooking = true;
+            ChasePlayer(playerPosition, distance);
+        }
+        else
+        {
+            isLooking = false;
+            PeopleBehaviour();
+        }
+        //Debug.Log(isLooking);
+    }
+
+    void ChasePlayer(Vector3 playerPosition, float distance)
+    {
+        playerSearch = player.search;
+        if(playerSearch > 0)
+        {
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", true);
+            nav.enabled = true;
+            nav.SetDestination(playerPosition);
+            nav.speed = 4.2f;
+            if (distance <= 20f)
+            {
+                AttackPlayer();
+            }
+        }
+        else
+        {
+            nav.enabled = false;
+            PeopleBehaviour();
+        }
+    }
+
+    void AttackPlayer()
+    {
+        if (canShoot) {
+            nav.speed = 0f;
+            nav.acceleration = 0f;
+            animator.Play("Shoot");
+            GameObject bulletClone = Instantiate(bullet, bulletTransform);
+            Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
+            rbBulletClone.AddForce(transform.forward * 60f, ForceMode.Impulse);
+            canShoot = false;
+            nav.speed = 4.2f;
+            nav.acceleration = 8f;
+            StartCoroutine(WaitForShoot());
+        }
+    }
+
     void createFX()
     {
         GameObject createdFX = Instantiate(fx, fxPoint.transform.position,fxPoint.transform.rotation);
         Destroy(createdFX, 2f);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-
-        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -88,28 +155,9 @@ public class PoliceIA : MonoBehaviour
             {
                 player.search += Random.Range(4,13);
                 rb.AddForce(transform.up * 650f);
-                npcHealth -= 25;
                 createFX();
+                npcHealth -= 25;
             }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") && isAlive)
-        {
-
-        }
-    }
-
-    void CheckAlive(int health)
-    {
-        if (health <= 0)
-        {
-            isAlive = false;
-            animator.enabled = false;
-
-            StartCoroutine(WaitForDissapear());
         }
     }
 
@@ -117,5 +165,11 @@ public class PoliceIA : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(4);
         Destroy(this.gameObject);
+    }
+
+    IEnumerator WaitForShoot()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        canShoot = true;
     }
 }

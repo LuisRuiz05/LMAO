@@ -7,13 +7,19 @@ using UnityEngine.UI;
 public class PlayerHandler : MonoBehaviour
 {
     public int money = 0;
-    public int health = 100;
-    public int food = 100;
-    public int water = 100;
+    float maxHealth = 100;
+    public float health = 100;
+    float maxFood = 100f;
+    public float food = 75f;
+    float maxWater = 100f;
+    public float water = 85f;
     public int intoxication = 0;
     public int search = 0;
 
     public Inventory inventory;
+    public Image foodBar;
+    public Image waterBar;
+    public Image healthBar;
     [SerializeField] private InventoryUI inventoryUI;
     public Canvas inventoryUIDisplay;
     public PostProcessVolume drunkFX;
@@ -65,26 +71,7 @@ public class PlayerHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (intoxication > 0)
-        {
-            isDrunk = true;
-        }
-        else
-        {
-            isDrunk = false;
-        }
-
-
-        if (isDrunk)
-        {
-            drunkFX.enabled = true;
-        }
-        else
-        {
-            drunkFX.enabled = false;
-        }
-        moneyText.text = "$" + money;
-        searchText.text = "Search level: " + search.ToString();
+        CheckStatus();
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -102,5 +89,26 @@ public class PlayerHandler : MonoBehaviour
             }
         }
 
+    }
+
+    private void CheckStatus()
+    {
+        healthBar.fillAmount = health / maxHealth;
+        foodBar.fillAmount = food / maxFood;
+        waterBar.fillAmount = water / maxWater;
+
+        if (intoxication > 0)
+        {
+            isDrunk = true;
+            drunkFX.enabled = true;
+        }
+        else
+        {
+            isDrunk = false;
+            drunkFX.enabled = false;
+        }
+
+        moneyText.text = "$" + money;
+        searchText.text = "Search level: " + search.ToString();
     }
 }
