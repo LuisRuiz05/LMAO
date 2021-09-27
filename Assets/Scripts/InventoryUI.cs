@@ -86,7 +86,6 @@ public class InventoryUI : MonoBehaviour
 
     private void Inventory_OnItemListChanged (object sender, System.EventArgs e)
     {
-        Debug.Log("Refreshing");
         RefreshInventoryItems();
     }
 

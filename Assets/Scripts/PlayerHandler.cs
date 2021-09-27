@@ -91,16 +91,12 @@ public class PlayerHandler : MonoBehaviour
             if (inventoryUIDisplay.enabled == true)
             {
                 //Close Inventory
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
                 inventoryUIDisplay.enabled = false;
                 isOpenInventory = false;
 
             } else
             {
                 //Open Inventory
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
                 inventoryUIDisplay.enabled = true;
                 isOpenInventory = true;
             }

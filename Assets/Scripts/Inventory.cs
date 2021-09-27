@@ -59,7 +59,7 @@ public class Inventory
             }
             if (itemInInventory != null && itemInInventory.amount <= 0)
             {
-                itemList.Remove(item);
+                itemList.Remove(itemInInventory);
             }
         }
         else
