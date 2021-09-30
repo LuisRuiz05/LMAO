@@ -10,11 +10,15 @@ public class PlayerHandler : MonoBehaviour
     float maxHealth = 100;
     public float health = 100;
     float maxFood = 100f;
-    public float food = 75f;
+    public float food = 100;
     float maxWater = 100f;
-    public float water = 85f;
-    public int intoxication = 0;
-    public int search = 0;
+    public float water = 100f;
+    public float intoxication = 0;
+    public float search = 0;
+
+    bool lowingFood = false;
+    bool lowingWater = false;
+    bool detoxicating = false;
 
     public Inventory inventory;
     public Image foodBar;
@@ -29,11 +33,6 @@ public class PlayerHandler : MonoBehaviour
     public Text moneyText;
     public Text searchText;
 
-    private void Awake()
-    { 
-        
-    }
-
     private void Start()
     {
         inventory = new Inventory(UseItem);
@@ -42,36 +41,11 @@ public class PlayerHandler : MonoBehaviour
         //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
     }
 
-    private void UseItem(Item item)
-    {
-        switch (item.itemType)
-        {
-            case Item.ItemType.Beer:
-                intoxication += 5;
-                inventory.RemoveItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
-                break;
-            case Item.ItemType.Drugs:
-                inventory.RemoveItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
-                intoxication += 15;
-                break;
-            case Item.ItemType.Food:
-                inventory.RemoveItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
-                food += 10;
-                break;
-            case Item.ItemType.Gun:
-                inventory.RemoveItem(new Item { itemType = Item.ItemType.Gun, amount = 1 });
-                break;
-            case Item.ItemType.Water:
-                inventory.RemoveItem(new Item { itemType = Item.ItemType.Water, amount = 1 });
-                water += 10;
-                break;
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
         CheckStatus();
+        UpdateStatus();
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -90,7 +64,41 @@ public class PlayerHandler : MonoBehaviour
         }
 
     }
+    void UpdateStatus()
+    {
+        if(food > 100)
+        {
+            food = 100;
+        } 
+        if (water > 100)
+        {
+            water = 100;
+        }
+        if (intoxication < 0)
+        {
+            intoxication = 0;
+        }
+        if (search < 0)
+        {
+            search = 0;
+        }
 
+        if (food > 0 && !lowingFood)
+        {
+            lowingFood = true;
+            StartCoroutine(GetFoodDown());
+        }
+        if (water > 0 && !lowingWater)
+        {
+            lowingWater = true;
+            StartCoroutine(GetWaterDown());
+        }
+        if (intoxication > 0 && !detoxicating)
+        {
+            detoxicating = true;
+            StartCoroutine(GetIntoxicationDown());
+        }
+    }
     private void CheckStatus()
     {
         healthBar.fillAmount = health / maxHealth;
@@ -110,5 +118,56 @@ public class PlayerHandler : MonoBehaviour
 
         moneyText.text = "$" + money;
         searchText.text = "Search level: " + search.ToString();
+    }
+
+    private void UseItem(Item item)
+    {
+        switch (item.itemType)
+        {
+            case Item.ItemType.Beer:
+                intoxication += 5;
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
+                break;
+            case Item.ItemType.Drugs:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
+                intoxication += 15;
+                break;
+            case Item.ItemType.Food:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
+                food += 10;
+                intoxication -= 1f;
+                break;
+            case Item.ItemType.Gun:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Gun, amount = 1 });
+                break;
+            case Item.ItemType.Water:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Water, amount = 1 });
+                water += 10;
+                intoxication -= 2f;
+                break;
+            case Item.ItemType.Medkit:
+                inventory.RemoveItem(new Item { itemType = Item.ItemType.Medkit, amount = 1 });
+                health += 10;
+                break;
+        }
+    }
+
+    IEnumerator GetWaterDown()
+    {
+        yield return new WaitForSecondsRealtime(30);
+        water -= 1;
+        lowingWater = false;
+    }
+    IEnumerator GetFoodDown()
+    {
+        yield return new WaitForSecondsRealtime(40);
+        food -= 1;
+        lowingFood = false;
+    }
+    IEnumerator GetIntoxicationDown()
+    {
+        yield return new WaitForSecondsRealtime(50);
+        intoxication -= 1;
+        detoxicating = false;
     }
 }

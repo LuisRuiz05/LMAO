@@ -16,7 +16,6 @@ public class bulletHandler : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Hit");
             player.health -= 30;
             Destroy(this.gameObject);
         }
@@ -29,6 +28,5 @@ public class bulletHandler : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(3);
         Destroy(this.gameObject);
-        Debug.Log("Miss");
     }
 }
