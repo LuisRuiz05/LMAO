@@ -56,9 +56,12 @@ public class PoliceSpawner : MonoBehaviour
     {
         foreach (GameObject police in policeList)
         {
-            if (police.GetComponent<PoliceIA>().isChasing)
+            if (police != null)
             {
-                return true;
+                if (police.GetComponent<PoliceIA>().isChasing)
+                {
+                    return true;
+                }
             }
         }
         return false;

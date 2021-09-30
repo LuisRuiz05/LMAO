@@ -51,6 +51,7 @@ public class PoliceIA : MonoBehaviour
         {
             isAlive = false;
             animator.enabled = false;
+            nav.enabled = false;
 
             StartCoroutine(WaitForDissapear());
         }
