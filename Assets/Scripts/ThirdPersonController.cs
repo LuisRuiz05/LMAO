@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ThirdPersonController : MonoBehaviour
 {
+    public Transform playerTransform;
     public CharacterController controller;
     public Transform mainCamera;
     Animator animator;

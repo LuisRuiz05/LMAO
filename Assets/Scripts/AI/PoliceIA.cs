@@ -50,9 +50,8 @@ public class PoliceIA : MonoBehaviour
         if (health <= 0)
         {
             isAlive = false;
-            animator.enabled = false;
+            animator.Play("Die");
             nav.enabled = false;
-
             StartCoroutine(WaitForDissapear());
         }
     }
@@ -173,7 +172,6 @@ public class PoliceIA : MonoBehaviour
                 {
                     player.search += Random.Range(4, 13);
                 }
-                rb.AddForce(transform.up * 650f);
                 createFX();
                 npcHealth -= 25;
             }
@@ -182,7 +180,7 @@ public class PoliceIA : MonoBehaviour
 
     IEnumerator WaitForDissapear()
     {
-        yield return new WaitForSecondsRealtime(4);
+        yield return new WaitForSecondsRealtime((float)1.8);
         Destroy(this.gameObject);
     }
 

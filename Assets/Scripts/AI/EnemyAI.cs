@@ -15,19 +15,20 @@ public class EnemyAI : MonoBehaviour
     public Quaternion angle;
     public float range;
 
-    public PlayerHandler player;
+    private PlayerHandler player;
     public Rigidbody rb;
     public GameObject fxPoint;
     public GameObject fx;
 
-    int playerIntoxication = 0;
     bool isLooking = false;
+    public bool isChasing = false;
     bool isAlive = true;
     bool canShoot = true;
 
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
         animator = GetComponent<Animator>();
         nav.enabled = false;
     }
@@ -36,7 +37,6 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         isLookingPlayer();
-        //PeopleBehaviour();
         CheckAlive(npcHealth);
     }
 
@@ -45,7 +45,8 @@ public class EnemyAI : MonoBehaviour
         if (health <= 0)
         {
             isAlive = false;
-            animator.enabled = false;
+            animator.Play("Die");
+            nav.enabled = false;
 
             StartCoroutine(WaitForDissapear());
         }
@@ -53,8 +54,9 @@ public class EnemyAI : MonoBehaviour
 
     public void PeopleBehaviour()
     {
-        if (isAlive && !isLooking)
+        if (isAlive)
         {
+            isChasing = false;
             cronometer += 1 * Time.deltaTime;
             if (cronometer >= 3)
             {
@@ -99,29 +101,18 @@ public class EnemyAI : MonoBehaviour
             isLooking = false;
             PeopleBehaviour();
         }
-        //Debug.Log(isLooking);
     }
 
     void ChasePlayer(Vector3 playerPosition, float distance)
     {
-        playerIntoxication = (int)player.intoxication;
-        //Cambiar Valor
-        if (playerIntoxication == 0)
-        {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", true);
-            nav.enabled = true;
-            nav.SetDestination(playerPosition);
-            nav.speed = 4.2f;
-            if (distance <= 20f)
-            {
-                AttackPlayer();
-            }
-        }
-        else
-        {
-            npcHealth = 0;
-            isAlive = false;
+        isChasing = true;
+        animator.SetBool("Walk", false);
+        animator.SetBool("Run", true);
+        nav.enabled = true;
+        nav.SetDestination(playerPosition);
+        nav.speed = 4.2f;
+        if (distance <= 20f) {
+            AttackPlayer();
         }
     }
 
@@ -154,17 +145,15 @@ public class EnemyAI : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                player.search += Random.Range(4, 13);
-                rb.AddForce(transform.up * 650f);
                 createFX();
-                npcHealth -= 25;
+                npcHealth -= 100;
             }
         }
     }
 
     IEnumerator WaitForDissapear()
     {
-        yield return new WaitForSecondsRealtime(4);
+        yield return new WaitForSecondsRealtime((float)1.8);
         Destroy(this.gameObject);
     }
 

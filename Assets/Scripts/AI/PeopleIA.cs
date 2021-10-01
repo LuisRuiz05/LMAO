@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PeopleIA : MonoBehaviour
 {
-    int npcHealth = 100;
+    public int npcHealth = 100;
     public int action;
     public float cronometer;
     Animator animator;
@@ -90,9 +90,12 @@ public class PeopleIA : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 player.search += Random.Range(4,13);
-                rb.AddForce(transform.up * 650f);
                 npcHealth -= 25;
                 createFX();
+                if (npcHealth > 0)
+                {
+                    rb.AddForce(transform.up * 650f);
+                }
             }
             if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
             {
@@ -129,7 +132,7 @@ public class PeopleIA : MonoBehaviour
         if (health <= 0)
         {
             isAlive = false;
-            animator.enabled = false;
+            animator.Play("Die");
             preinteraction.SetUnactive();
             StartCoroutine(WaitForDissapear());
         }
@@ -149,7 +152,7 @@ public class PeopleIA : MonoBehaviour
 
     IEnumerator WaitForDissapear()
     {
-        yield return new WaitForSecondsRealtime(4);
+        yield return new WaitForSecondsRealtime((float)1.8);
         Destroy(this.gameObject);
     }
 }
