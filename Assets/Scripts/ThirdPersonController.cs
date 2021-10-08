@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class ThirdPersonController : MonoBehaviour
 {
-    public Transform playerTransform;
+    public Transform modelTransform;
     public CharacterController controller;
     public Transform mainCamera;
     Animator animator;
     Vector3 falling = new Vector3(0f,0f,0f);
 
+    bool isInCorrectPosition = true;
     public float speed = 6f;
     public float runSpeed = 9f;
     
@@ -35,6 +36,8 @@ public class ThirdPersonController : MonoBehaviour
         float hAxis = Input.GetAxisRaw("Horizontal");
         float vAxis = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(hAxis, 0f, vAxis);
+
+        CheckModelsPosition();
 
         if (Input.GetKey(KeyCode.Space) && controller.isGrounded)
         {
@@ -83,6 +86,26 @@ public class ThirdPersonController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             animator.Play("Dance");
+        }
+    }
+
+    void CheckModelsPosition()
+    {
+        modelTransform.localRotation = new Quaternion(0, 0, 0, 1);
+        if(modelTransform.localPosition != Vector3.zero)
+        {
+            isInCorrectPosition = false;
+            StartCoroutine(FixModelsPostion());
+        }
+    }
+
+
+    IEnumerator FixModelsPostion()
+    {
+        if (!isInCorrectPosition) {
+            yield return new WaitForSecondsRealtime(12);
+            modelTransform.localPosition = Vector3.zero;
+            isInCorrectPosition = true;
         }
     }
 }

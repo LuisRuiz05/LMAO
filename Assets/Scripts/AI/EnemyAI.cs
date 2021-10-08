@@ -15,12 +15,10 @@ public class EnemyAI : MonoBehaviour
     public Quaternion angle;
     public float range;
 
-    private PlayerHandler player;
     public Rigidbody rb;
     public GameObject fxPoint;
     public GameObject fx;
 
-    bool isLooking = false;
     public bool isChasing = false;
     bool isAlive = true;
     bool canShoot = true;
@@ -28,7 +26,6 @@ public class EnemyAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
         animator = GetComponent<Animator>();
         nav.enabled = false;
     }
@@ -93,12 +90,10 @@ public class EnemyAI : MonoBehaviour
 
         if ((Vector3.Dot(forward, target) < 0.2f && distance <= 30.0f) || distance <= 4f)
         {
-            isLooking = true;
             ChasePlayer(playerPosition, distance);
         }
         else
         {
-            isLooking = false;
             PeopleBehaviour();
         }
     }
