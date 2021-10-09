@@ -13,11 +13,22 @@ public class MainMenu : MonoBehaviour
     public Text progressText;
     public GameObject buttons;
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void StartGame()
     {
         loadingScreen.SetActive(true);
         buttons.SetActive(false);
         StartCoroutine(LoadAsynchronously());
+    }
+
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene(1);
     }
 
     public void ShowControls()

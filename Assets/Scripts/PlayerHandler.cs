@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHandler : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class PlayerHandler : MonoBehaviour
     public Image waterBar;
     public Image healthBar;
     [SerializeField] private InventoryUI inventoryUI;
+    public ThirdPersonController thirdPersonController;
     public Canvas inventoryUIDisplay;
     public PostProcessVolume drunkFX;
     public bool isDrunk = false;
@@ -46,6 +48,7 @@ public class PlayerHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckAlive();
         CheckStatus();
         UpdateStatus();
 
@@ -165,6 +168,14 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
+    void CheckAlive(){
+        if (health <= 0)
+        {
+            thirdPersonController.Die();
+            StartCoroutine(LoadDeathScreen());
+        }
+    }
+
     IEnumerator GetWaterDown()
     {
         yield return new WaitForSecondsRealtime(30);
@@ -182,5 +193,11 @@ public class PlayerHandler : MonoBehaviour
         yield return new WaitForSecondsRealtime(50);
         intoxication -= 1;
         detoxicating = false;
+    }
+
+    IEnumerator LoadDeathScreen()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        SceneManager.LoadScene(3);
     }
 }

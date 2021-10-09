@@ -9,6 +9,7 @@ public class ThirdPersonController : MonoBehaviour
     public Transform mainCamera;
     Animator animator;
     Vector3 falling = new Vector3(0f,0f,0f);
+    bool isAlive = true;
 
     bool isInCorrectPosition = true;
     public float speed = 6f;
@@ -32,61 +33,70 @@ public class ThirdPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 moveDirection;
-        float hAxis = Input.GetAxisRaw("Horizontal");
-        float vAxis = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(hAxis, 0f, vAxis);
-
-        CheckModelsPosition();
-
-        if (Input.GetKey(KeyCode.Space) && controller.isGrounded)
+        if (isAlive)
         {
-            falling.y = jumpHeight;
-        }
+            Vector3 moveDirection;
+            float hAxis = Input.GetAxisRaw("Horizontal");
+            float vAxis = Input.GetAxisRaw("Vertical");
+            Vector3 direction = new Vector3(hAxis, 0f, vAxis);
 
-        falling.y -= (gravity * Time.deltaTime);
+            CheckModelsPosition();
 
-        controller.Move(falling * Time.deltaTime);
-
-        if (direction.magnitude >= 0.1f)
-        {
-            
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            moveDirection = moveDirection + (falling * Time.deltaTime);
-
-
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.Space) && controller.isGrounded)
             {
-                animator.SetBool("Walk", false);
-                animator.SetBool("Run", true);
-                controller.Move(moveDirection * runSpeed * Time.deltaTime);
+                falling.y = jumpHeight;
+            }
+
+            falling.y -= (gravity * Time.deltaTime);
+
+            controller.Move(falling * Time.deltaTime);
+
+            if (direction.magnitude >= 0.1f)
+            {
+
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.eulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+                moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                moveDirection = moveDirection + (falling * Time.deltaTime);
+
+
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", true);
+                    controller.Move(moveDirection * runSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    animator.SetBool("Walk", true);
+                    animator.SetBool("Run", false);
+                    controller.Move(moveDirection * speed * Time.deltaTime);
+                }
             }
             else
             {
-                animator.SetBool("Walk", true);
+                animator.SetBool("Walk", false);
                 animator.SetBool("Run", false);
-                controller.Move(moveDirection * speed * Time.deltaTime);
+            }
+
+            //Animations
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                animator.Play("Punch");
+            }
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                animator.Play("Dance");
             }
         }
-        else
-        {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-        }
+    }
 
-        //Animations
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            animator.Play("Punch");
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            animator.Play("Dance");
-        }
+    public void Die()
+    {
+        animator.Play("Die");
+        isAlive = false;
     }
 
     void CheckModelsPosition()
