@@ -9,6 +9,8 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemy;
     bool isSpawning = false;
 
+    public List<GameObject> enemyList = new List<GameObject>();
+
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<PlayerHandler>();
@@ -20,6 +22,7 @@ public class EnemySpawner : MonoBehaviour
         intoxication = player.intoxication;
         SpawnEnemies();
         DespawnEnemies();
+        CleanList();
     }
 
     void SpawnEnemies()
@@ -38,6 +41,18 @@ public class EnemySpawner : MonoBehaviour
             foreach (Transform children in transform)
             {
                 Destroy(children.gameObject);
+                enemyList.Clear();
+            }
+        }
+    }
+
+    void CleanList()
+    {
+        foreach(GameObject enemy in enemyList.ToArray())
+        {
+            if (enemy == null)
+            {
+                enemyList.Remove(enemy);
             }
         }
     }
@@ -46,6 +61,7 @@ public class EnemySpawner : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(10);
         GameObject enemyClone = Instantiate(enemy, gameObject.transform);
+        enemyList.Add(enemyClone);
         isSpawning = false;
     }
 

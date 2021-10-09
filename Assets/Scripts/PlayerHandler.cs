@@ -19,6 +19,7 @@ public class PlayerHandler : MonoBehaviour
     bool lowingFood = false;
     bool lowingWater = false;
     bool detoxicating = false;
+    bool hasAlly = false;
 
     public Inventory inventory;
     public Image foodBar;
@@ -29,6 +30,7 @@ public class PlayerHandler : MonoBehaviour
     public PostProcessVolume drunkFX;
     public bool isDrunk = false;
     public bool isOpenInventory = false;
+    public GameObject allyPrefab;
 
     public Text moneyText;
     public Text searchText;
@@ -109,15 +111,26 @@ public class PlayerHandler : MonoBehaviour
         {
             isDrunk = true;
             drunkFX.enabled = true;
+            SpawnAlly();
         }
         else
         {
             isDrunk = false;
             drunkFX.enabled = false;
+            hasAlly = false;
         }
 
         moneyText.text = "$" + money;
         searchText.text = "Search level: " + search.ToString();
+    }
+
+    void SpawnAlly()
+    {
+        if (!hasAlly)
+        {
+            GameObject ally = Instantiate(allyPrefab);
+            hasAlly = true;
+        }
     }
 
     private void UseItem(Item item)

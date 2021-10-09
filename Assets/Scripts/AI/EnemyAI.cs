@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     public NavMeshAgent nav;
-    int npcHealth = 100;
+    public int npcHealth = 100;
     public Transform bulletTransform;
     public GameObject bullet;
     public int action;
@@ -20,7 +20,7 @@ public class EnemyAI : MonoBehaviour
     public GameObject fx;
 
     public bool isChasing = false;
-    bool isAlive = true;
+    public bool isAlive = true;
     bool canShoot = true;
 
     // Start is called before the first frame update

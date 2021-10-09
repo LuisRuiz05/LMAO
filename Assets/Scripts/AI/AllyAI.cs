@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class AllyAI : MonoBehaviour
 {
+    PlayerHandler player;
     public NavMeshAgent nav;
     int npcHealth = 100;
     public Transform bulletTransform;
@@ -20,49 +21,108 @@ public class AllyAI : MonoBehaviour
     public GameObject fx;
 
     public bool isChasing = false;
-    bool isAlive = true;
     bool canShoot = true;
+    bool isChasingEnemy = false;
+    List<GameObject> enemyList = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        nav.enabled = false;
+        enemyList = GameObject.Find("EnemyGangSpawner").GetComponent<EnemySpawner>().enemyList;
+        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckAlive(npcHealth);
+        CheckAlive();
         FollowPlayer();
+        DecideClosestEnemy();
     }
 
     void FollowPlayer()
     {
-        Vector3 playerPosition = GameObject.Find("Player").transform.position;
-        nav.enabled = true;
-        
-        nav.SetDestination(playerPosition);
-        if (nav.velocity.magnitude <= 0){
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", false);
-        }
-        else
+        if (!isChasingEnemy)
         {
-            animator.SetBool("Walk", true);
-            animator.SetBool("Run", false);
+            Vector3 playerPosition = GameObject.Find("Player").transform.position;
+
+            nav.SetDestination(playerPosition);
+            nav.speed = 3.5f;
+            nav.stoppingDistance = 3f;
+            if (nav.velocity.magnitude <= 0)
+            {
+                animator.SetBool("Walk", false);
+                animator.SetBool("Run", false);
+            }
+            else
+            {
+                animator.SetBool("Walk", true);
+                animator.SetBool("Run", false);
+            }
         }
     }
 
-    void CheckAlive(int health)
+    void CheckAlive()
     {
-        if (health <= 0)
+        if (!player.isDrunk)
         {
-            isAlive = false;
             animator.Play("Die");
             nav.enabled = false;
 
             StartCoroutine(WaitForDissapear());
+        }
+    }
+
+    void DecideClosestEnemy()
+    {
+        float distanceToClosestEnemy = 10000f;
+        GameObject closestEnemy = null;
+        foreach (GameObject enemy in enemyList)
+        {
+            if (enemy != null)
+            {
+                float distanceToEnemy = Vector3.Distance(enemy.transform.position, transform.position);
+                if (distanceToEnemy < 15f && distanceToEnemy < distanceToClosestEnemy)
+                {
+                    distanceToClosestEnemy = distanceToEnemy;
+                    closestEnemy = enemy;
+                }
+            }
+        }
+        if (closestEnemy != null) {
+            ChaseEnemy(closestEnemy, distanceToClosestEnemy);
+        }
+    }
+
+    void ChaseEnemy(GameObject enemy, float distance)
+    {
+        if (enemy != null && enemy.GetComponent<EnemyAI>().isAlive)
+        {
+            isChasing = true;
+            animator.SetBool("Walk", false);
+            animator.SetBool("Run", true);
+            nav.enabled = true;
+            nav.SetDestination(enemy.transform.position);
+            nav.speed = 4.2f;
+            nav.stoppingDistance = 0.5f;
+            if (distance <= 20f)
+            {
+                AttackEnemy();
+            }
+        }
+    }
+
+    void AttackEnemy()
+    {
+        if (canShoot)
+        {
+            animator.Play("Shoot");
+            GameObject bulletClone = Instantiate(bullet, bulletTransform);
+            Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
+            rbBulletClone.AddForce(transform.forward * 60f, ForceMode.Impulse);
+            canShoot = false;
+            StartCoroutine(WaitForShoot());
         }
     }
 
