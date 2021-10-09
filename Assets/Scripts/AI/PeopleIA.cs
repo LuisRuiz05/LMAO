@@ -22,6 +22,13 @@ public class PeopleIA : MonoBehaviour
     bool hasGiven = false;
     bool isAlive = true;
 
+    //Head
+    public GameObject npcHead;
+    //Body
+    public GameObject npcTop;
+    //Bottom
+    public GameObject npcBottom;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +43,13 @@ public class PeopleIA : MonoBehaviour
     {
         PeopleBehaviour();
         CheckAlive(npcHealth);
+    }
+
+    public void SetSkin(Material head, Material top, Material bottom)
+    {
+        npcHead.GetComponent<SkinnedMeshRenderer>().material = head;
+        npcTop.GetComponent<SkinnedMeshRenderer>().material = top;
+        npcBottom.GetComponent<SkinnedMeshRenderer>().material = bottom;
     }
 
     public void PeopleBehaviour()
