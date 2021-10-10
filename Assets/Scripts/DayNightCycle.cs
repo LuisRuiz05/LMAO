@@ -11,7 +11,7 @@ public class DayNightCycle : MonoBehaviour
     public Material noonSky;
     public Material nightSky;
 
-    float timeDelay = 0.02f;
+    float timeDelay = 0.002f;
     float maxIntensity = 2;
     float minIntensity = 0;
     float intensity;
