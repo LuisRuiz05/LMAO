@@ -27,8 +27,8 @@ public class Item
             case ItemType.Water: return ItemAssets.Instance.waterSprite;
             case ItemType.Beer: return ItemAssets.Instance.beerSprite;
             case ItemType.Drugs: return ItemAssets.Instance.drugsSprite;
-            case ItemType.Gun: return ItemAssets.Instance.gunSprite;
             case ItemType.Medkit: return ItemAssets.Instance.medkitSprite;
+            case ItemType.Gun: return ItemAssets.Instance.gunSprite;
         }
     }
 

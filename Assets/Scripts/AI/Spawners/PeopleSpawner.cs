@@ -33,12 +33,6 @@ public class PeopleSpawner : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void Spawn(Transform spawn)
     {
         Material chosenHead;

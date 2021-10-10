@@ -16,6 +16,8 @@ public class DayNightCycle : MonoBehaviour
     float minIntensity = 0;
     float intensity;
 
+    public string dayNight = "";
+
     bool toNight = true;
 
     // Start is called before the first frame update
@@ -59,15 +61,18 @@ public class DayNightCycle : MonoBehaviour
         {
             sky.material = nightSky;
             sun.shadows = LightShadows.None;
+            dayNight = "night";
         } else if (intensity > 0.35f && intensity <= 0.65f)
         {
             sky.material = noonSky;
             sun.shadows = LightShadows.Hard;
+            dayNight = "day";
         }
         else
         {
             sky.material = daySky;
             sun.shadows = LightShadows.Hard;
+            dayNight = "day";
         }
     }
 }
