@@ -6,6 +6,8 @@ public class PeopleSpawner : MonoBehaviour
 {
     public GameObject npc;
     public Transform[] masterSpawner;
+    int peopleInMap = 35;
+    public List<GameObject> peopleList = new List<GameObject>();
 
     //Materials
     //Head
@@ -31,6 +33,11 @@ public class PeopleSpawner : MonoBehaviour
         foreach (Transform transform in masterSpawner) {
             Spawn(transform);
         }
+    }
+
+    private void Update()
+    {
+        CheckPeopleAlive();
     }
 
     void Spawn(Transform spawn)
@@ -72,5 +79,25 @@ public class PeopleSpawner : MonoBehaviour
 
         GameObject npcClone = Instantiate(npc, spawn);
         npcClone.GetComponent<PeopleIA>().SetSkin(chosenHead, chosenTop, chosenBottom);
+        peopleList.Add(npcClone);
+    }
+
+    void CheckPeopleAlive()
+    {
+        foreach(GameObject person in peopleList.ToArray())
+        {
+            if (person == null)
+            {
+                peopleList.Remove(person);
+                StartCoroutine(WaitForRespawn());
+            }
+        }
+    }
+
+    IEnumerator WaitForRespawn()
+    {
+        yield return new WaitForSecondsRealtime(3);
+        int randomSpawn = Random.Range(1, masterSpawner.Length);
+        Spawn(masterSpawner[randomSpawn]);
     }
 }

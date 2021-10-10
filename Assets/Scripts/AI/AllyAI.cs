@@ -7,7 +7,6 @@ public class AllyAI : MonoBehaviour
 {
     PlayerHandler player;
     public NavMeshAgent nav;
-    int npcHealth = 100;
     public Transform bulletTransform;
     public GameObject bullet;
     public int action;
