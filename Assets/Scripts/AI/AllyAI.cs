@@ -23,13 +23,21 @@ public class AllyAI : MonoBehaviour
     bool canShoot = true;
     bool isChasingEnemy = false;
     List<GameObject> enemyList = new List<GameObject>();
+    List<GameObject> policeList = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        enemyList = GameObject.Find("EnemyGangSpawner").GetComponent<EnemySpawner>().enemyList;
         player = GameObject.Find("Player").GetComponent<PlayerHandler>();
+        if (GameObject.Find("EnemyGangSpawner"))
+        {
+            enemyList = GameObject.Find("EnemyGangSpawner").GetComponent<EnemySpawner>().enemyList;
+        }
+        if (GameObject.Find("PoliceSpawner"))
+        {
+            policeList = GameObject.Find("PoliceSpawner").GetComponent<PoliceSpawner>().policeList;
+        }
     }
 
     // Update is called once per frame
@@ -77,6 +85,7 @@ public class AllyAI : MonoBehaviour
     {
         float distanceToClosestEnemy = 10000f;
         GameObject closestEnemy = null;
+
         foreach (GameObject enemy in enemyList)
         {
             if (enemy != null)
@@ -105,7 +114,7 @@ public class AllyAI : MonoBehaviour
             nav.SetDestination(enemy.transform.position);
             nav.speed = 4.2f;
             nav.stoppingDistance = 0.5f;
-            if (distance <= 20f)
+            if (distance <= 12f)
             {
                 AttackEnemy();
             }

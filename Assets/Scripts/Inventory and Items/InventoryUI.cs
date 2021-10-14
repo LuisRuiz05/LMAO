@@ -101,6 +101,7 @@ public class InventoryUI : MonoBehaviour
         float x = -2;
         float y = 0.15f;
         float itemSlotCellSize = 80f;
+        int position = 1;
         foreach (Item item in inventory.GetItemList())
         {
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTemplate, itemSlotContainer).GetComponent<RectTransform>();
@@ -111,7 +112,10 @@ public class InventoryUI : MonoBehaviour
             image.sprite = item.GetSprite();
             Text txt = itemSlotRectTransform.Find("amountText").GetComponent<Text>();
             txt.text = item.amount.ToString();
-            
+            Text kbTxt = itemSlotRectTransform.Find("keyboard").GetComponent<Text>();
+            kbTxt.text = position.ToString();
+            position++;
+
             x++;
             if (x > 2)
             {

@@ -10,13 +10,18 @@ public class Inventory
     private List<Item> itemList;
     private Action<Item> useItemAction;
 
-    public Inventory(Action<Item> useItemAction) {
+    public Inventory(Action<Item> useItemAction, bool isTutorial) {
         this.useItemAction = useItemAction;
         itemList = new List<Item>();
 
-        AddItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
-        AddItem(new Item { itemType = Item.ItemType.Water, amount = 1 });
-        AddItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
+        if (!isTutorial)
+        {
+            AddItem(new Item { itemType = Item.ItemType.Food, amount = 3 });
+            AddItem(new Item { itemType = Item.ItemType.Water, amount = 3 });
+            AddItem(new Item { itemType = Item.ItemType.Beer, amount = 2 });
+            AddItem(new Item { itemType = Item.ItemType.Medkit, amount = 1 });
+            AddItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
+        }
     }
 
     public void AddItem(Item item)

@@ -21,8 +21,8 @@ public class bulletHandler : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
-            player.health -= 30;
             other.gameObject.GetComponent<EnemyAI>().npcHealth -= 100;
+            Destroy(this.gameObject);
         }
         else
         {

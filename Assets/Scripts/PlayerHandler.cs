@@ -32,6 +32,7 @@ public class PlayerHandler : MonoBehaviour
     public PostProcessVolume drunkFX;
     public bool isDrunk = false;
     public bool isOpenInventory = false;
+    public bool isTutorial;
     public GameObject allyPrefab;
 
     public Text moneyText;
@@ -39,7 +40,17 @@ public class PlayerHandler : MonoBehaviour
 
     private void Start()
     {
-        inventory = new Inventory(UseItem);
+        if (GameObject.Find("Tutorial") != null)
+        {
+            isTutorial = true;
+            money = 25;
+        }
+        else
+        {
+            isTutorial = false;
+        }
+
+        inventory = new Inventory(UseItem, isTutorial);
         inventoryUI.SetInventory(inventory);
         inventoryUIDisplay.enabled = false;
         //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
@@ -142,6 +153,7 @@ public class PlayerHandler : MonoBehaviour
         {
             case Item.ItemType.Beer:
                 intoxication += 5;
+                water -= 2;
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
                 break;
             case Item.ItemType.Drugs:
@@ -198,6 +210,6 @@ public class PlayerHandler : MonoBehaviour
     IEnumerator LoadDeathScreen()
     {
         yield return new WaitForSecondsRealtime(2);
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(4);
     }
 }

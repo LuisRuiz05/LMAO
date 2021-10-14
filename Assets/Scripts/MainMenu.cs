@@ -12,11 +12,13 @@ public class MainMenu : MonoBehaviour
     public Slider slider;
     public Text progressText;
     public GameObject buttons;
-
+    public bool isMainMenu = false;
+    public Canvas controls;
     private void Start()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        controls.gameObject.SetActive(false);
     }
 
     public void StartGame()
@@ -33,7 +35,12 @@ public class MainMenu : MonoBehaviour
 
     public void ShowControls()
     {
+        controls.gameObject.SetActive(true);
+    }
 
+    public void CloseControls()
+    {
+        controls.gameObject.SetActive(false);
     }
 
     public void Quit()
@@ -43,9 +50,17 @@ public class MainMenu : MonoBehaviour
 
     IEnumerator LoadAsynchronously()
     {
+        AsyncOperation operation;
 
-        AsyncOperation operation = SceneManager.LoadSceneAsync(2);
-        
+        if (isMainMenu)
+        {
+            operation = SceneManager.LoadSceneAsync(2);
+        }
+        else
+        {
+            operation = SceneManager.LoadSceneAsync(3);
+        }
+
         while (!operation.isDone)
         {
             float progress = Mathf.Clamp01(operation.progress / .9f);
