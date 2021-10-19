@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ThirdPersonController : MonoBehaviour
 {
+    public PlayerHandler player;
     public Transform modelTransform;
     public CharacterController controller;
     public Transform mainCamera;
@@ -13,7 +14,9 @@ public class ThirdPersonController : MonoBehaviour
 
     bool isInCorrectPosition = true;
     public float speed = 6f;
+    public float intoxicatedSpeed = 3.5f;
     public float runSpeed = 9f;
+    public float intoxicatedRunSpeed = 6.5f;
     
     //
     public float gravity = 9.81f;
@@ -66,13 +69,27 @@ public class ThirdPersonController : MonoBehaviour
                 {
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", true);
-                    controller.Move(moveDirection * runSpeed * Time.deltaTime);
+                    if (isDrunk())
+                    {
+                        controller.Move(moveDirection * intoxicatedRunSpeed * Time.deltaTime);
+                    }
+                    else
+                    {
+                        controller.Move(moveDirection * runSpeed * Time.deltaTime);
+                    }
                 }
                 else
                 {
                     animator.SetBool("Walk", true);
                     animator.SetBool("Run", false);
-                    controller.Move(moveDirection * speed * Time.deltaTime);
+                    if (isDrunk())
+                    {
+                        controller.Move(moveDirection * intoxicatedSpeed * Time.deltaTime);
+                    }
+                    else
+                    {
+                        controller.Move(moveDirection * speed * Time.deltaTime);
+                    }
                 }
             }
             else
@@ -82,7 +99,7 @@ public class ThirdPersonController : MonoBehaviour
             }
 
             //Animations
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKey(KeyCode.Q))
             {
                 animator.Play("Punch");
             }
@@ -109,6 +126,14 @@ public class ThirdPersonController : MonoBehaviour
         }
     }
 
+    bool isDrunk()
+    {
+        if (player.intoxication > 0)
+        {
+            return true;
+        }
+        return false;
+    }
 
     IEnumerator FixModelsPostion()
     {

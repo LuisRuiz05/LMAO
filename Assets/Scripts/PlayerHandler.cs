@@ -14,18 +14,17 @@ public class PlayerHandler : MonoBehaviour
     public float food = 100;
     float maxWater = 100f;
     public float water = 100f;
+    float maxXP = 200;
+    public float xp = 0;
     public float intoxication = 0;
     public float search = 0;
+    int level = 1;
 
     bool lowingFood = false;
     bool lowingWater = false;
     bool detoxicating = false;
     bool hasAlly = false;
-
-    public Inventory inventory;
-    public Image foodBar;
-    public Image waterBar;
-    public Image healthBar;
+    
     [SerializeField] private InventoryUI inventoryUI;
     public ThirdPersonController thirdPersonController;
     public Canvas inventoryUIDisplay;
@@ -35,8 +34,14 @@ public class PlayerHandler : MonoBehaviour
     public bool isTutorial;
     public GameObject allyPrefab;
 
+    public Inventory inventory;
+    public Image foodBar;
+    public Image waterBar;
+    public Image healthBar;
+    public Image xpBar;
     public Text moneyText;
     public Text searchText;
+    public Text levelText;
 
     private void Start()
     {
@@ -97,6 +102,9 @@ public class PlayerHandler : MonoBehaviour
         if (search < 0)
         {
             search = 0;
+        } if (search > 550)
+        {
+            search = 550;
         }
 
         if (food > 0 && !lowingFood)
@@ -120,6 +128,7 @@ public class PlayerHandler : MonoBehaviour
         healthBar.fillAmount = health / maxHealth;
         foodBar.fillAmount = food / maxFood;
         waterBar.fillAmount = water / maxWater;
+        xpBar.fillAmount = xp / maxXP;
 
         if (intoxication > 0)
         {
@@ -134,8 +143,16 @@ public class PlayerHandler : MonoBehaviour
             hasAlly = false;
         }
 
+        if (xpBar.fillAmount == 1)
+        {
+            xp -= maxXP;
+            level++;
+            maxXP *= 2;
+        }
+
         moneyText.text = "$" + money;
         searchText.text = "Search level: " + search.ToString();
+        levelText.text = level.ToString();
     }
 
     void SpawnAlly()
@@ -191,7 +208,13 @@ public class PlayerHandler : MonoBehaviour
     IEnumerator GetWaterDown()
     {
         yield return new WaitForSecondsRealtime(30);
-        water -= 1;
+        if (!isDrunk)
+        {
+            water -= 1;
+        } else
+        {
+            water -= 3;
+        }
         lowingWater = false;
     }
     IEnumerator GetFoodDown()

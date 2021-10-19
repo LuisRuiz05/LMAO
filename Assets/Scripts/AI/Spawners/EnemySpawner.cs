@@ -59,7 +59,7 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator WaitForSpawn()
     {
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSecondsRealtime(5);
         GameObject enemyClone = Instantiate(enemy, gameObject.transform);
         enemyList.Add(enemyClone);
         isSpawning = false;

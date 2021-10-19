@@ -5,6 +5,7 @@ using UnityEngine;
 public class bulletHandler : MonoBehaviour
 {
     PlayerHandler player;
+    public bool isEnemy;
 
     private void Start()
     {
@@ -14,12 +15,13 @@ public class bulletHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && isEnemy)
         {
             player.health -= 30;
             Destroy(this.gameObject);
         }
-        if (other.gameObject.CompareTag("Enemy"))
+
+        if (other.gameObject.CompareTag("Enemy") && !isEnemy)
         {
             other.gameObject.GetComponent<EnemyAI>().npcHealth -= 100;
             Destroy(this.gameObject);

@@ -6,6 +6,7 @@ public class DayNightCycle : MonoBehaviour
 {
     public Light sun;
     public Skybox sky;
+    PlayerHandler player;
 
     public Material daySky;
     public Material noonSky;
@@ -18,12 +19,14 @@ public class DayNightCycle : MonoBehaviour
 
     public string dayNight = "";
 
+    bool dailyPay = false;
     bool toNight = true;
 
     // Start is called before the first frame update
     void Start()
     {
         intensity = sun.intensity;
+        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
     }
 
     // Update is called once per frame
@@ -60,18 +63,27 @@ public class DayNightCycle : MonoBehaviour
         if (intensity <= 0.35f)
         {
             sky.material = nightSky;
-            sun.shadows = LightShadows.None;
+            if (dailyPay)
+            {
+                dailyPay = false;
+            }
+            //sun.shadows = LightShadows.None;
             dayNight = "night";
         } else if (intensity > 0.35f && intensity <= 0.65f)
         {
             sky.material = noonSky;
-            sun.shadows = LightShadows.Hard;
+            if (!dailyPay && !toNight)
+            {
+                player.xp += 100;
+                dailyPay = true;
+            }
+            //sun.shadows = LightShadows.Hard;
             dayNight = "day";
         }
         else
         {
             sky.material = daySky;
-            sun.shadows = LightShadows.Hard;
+            //sun.shadows = LightShadows.Hard;
             dayNight = "day";
         }
     }

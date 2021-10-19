@@ -119,6 +119,7 @@ public class EnemyAI : MonoBehaviour
             nav.acceleration = 0f;
             animator.Play("Shoot");
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
+            bulletClone.GetComponent<bulletHandler>().isEnemy = true;
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
             rbBulletClone.AddForce(transform.forward * 60f, ForceMode.Impulse);
             canShoot = false;
@@ -141,6 +142,10 @@ public class EnemyAI : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 createFX();
+                if (npcHealth > 0)
+                {
+                    other.GetComponent<PlayerHandler>().xp += 30;
+                }
                 npcHealth -= 100;
             }
         }

@@ -128,6 +128,7 @@ public class AllyAI : MonoBehaviour
             animator.Play("Shoot");
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
+            bulletClone.GetComponent<bulletHandler>().isEnemy = false;
             rbBulletClone.AddForce(transform.forward * 60f, ForceMode.Impulse);
             canShoot = false;
             StartCoroutine(WaitForShoot());

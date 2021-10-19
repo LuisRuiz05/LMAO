@@ -143,6 +143,7 @@ public class PoliceIA : MonoBehaviour
             nav.acceleration = 0f;
             animator.Play("Shoot");
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
+            bulletClone.GetComponent<bulletHandler>().isEnemy = true;
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
             rbBulletClone.AddForce(transform.forward * 60f, ForceMode.Impulse);
             canShoot = false;
@@ -182,6 +183,7 @@ public class PoliceIA : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime((float)1.8);
         Destroy(this.gameObject);
+        player.xp += 50;
     }
 
     IEnumerator WaitForShoot()

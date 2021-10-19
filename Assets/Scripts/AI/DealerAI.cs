@@ -7,7 +7,6 @@ public class DealerAI : MonoBehaviour
 {
     public Text text;
     public DayNightCycle dayNight;
-    PlayerHandler player;
     public ItemWorldSpawner itemSpawner;
     bool canSell = true;
     bool canWalk = true;
@@ -24,7 +23,6 @@ public class DealerAI : MonoBehaviour
         text = GameObject.Find("SellerText").GetComponent<Text>();
         dayNight = GameObject.Find("Day/Night Cycle").GetComponent<DayNightCycle>();
         text.enabled = false;
-        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
     }
 
     // Update is called once per frame
@@ -80,6 +78,7 @@ public class DealerAI : MonoBehaviour
     {
         if (other.CompareTag("Player") && canSell)
         {
+            PlayerHandler player = other.GetComponent<PlayerHandler>();
             text.enabled = true;
             canWalk = false;
             if (Input.GetKeyDown(KeyCode.E))
@@ -87,6 +86,7 @@ public class DealerAI : MonoBehaviour
                 if (player.money >= 25)
                 {
                     player.money -= 25;
+                    player.xp += 10;
                     itemSpawner.SpawnRandomDrugItem();
                 }
             }

@@ -18,6 +18,10 @@ public class PeopleIA : MonoBehaviour
     public GameObject fxPoint;
     public GameObject fx;
 
+    public GameObject availableBall;
+    public GameObject givenBall;
+    public GameObject stolenBall;
+
     bool hasStolen = false;
     bool hasGiven = false;
     bool isAlive = true;
@@ -36,6 +40,7 @@ public class PeopleIA : MonoBehaviour
         preinteraction = GameObject.Find("Preinteraction").GetComponent<Preinteraction>();
         animator = GetComponent<Animator>();
         preinteraction.SetUnactive();
+        UpdateNPCState();
     }
 
     // Update is called once per frame
@@ -43,6 +48,7 @@ public class PeopleIA : MonoBehaviour
     {
         PeopleBehaviour();
         CheckAlive(npcHealth);
+        UpdateNPCState();
     }
 
     public void SetSkin(Material head, Material top, Material bottom)
@@ -113,16 +119,26 @@ public class PeopleIA : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
             {
-                player.money += Random.Range(0, 50);
+                int given = Random.Range(0, 50);
+                player.money += given;
                 player.search += Random.Range(15,25);
                 hasStolen = true;
+                if (given > 0)
+                {
+                    player.xp += 14;
+                }
                 StartCoroutine(WaitForSteal());
             }
             if (Input.GetKeyDown(KeyCode.R) && isAlive)
             {
-                if (!hasGiven)
+                if (!hasGiven && !hasStolen)
                 {
-                    player.money += Random.Range(0,4);
+                    int given = Random.Range(0, 4);
+                    player.money += given;
+                    if (given > 0)
+                    {
+                        player.xp += 6;
+                    }
                     hasGiven = true;
                     StartCoroutine(WaitForGive());
                 } else
@@ -149,6 +165,26 @@ public class PeopleIA : MonoBehaviour
             animator.Play("Die");
             preinteraction.SetUnactive();
             StartCoroutine(WaitForDissapear());
+        }
+    }
+
+    void UpdateNPCState()
+    {
+        if(!hasGiven && !hasStolen)
+        {
+            availableBall.SetActive(true);
+            givenBall.SetActive(false);
+            stolenBall.SetActive(false);
+        } else if(hasGiven && !hasStolen)
+        {
+            availableBall.SetActive(false);
+            givenBall.SetActive(true);
+            stolenBall.SetActive(false);
+        } else if (hasStolen)
+        {
+            availableBall.SetActive(false);
+            givenBall.SetActive(false);
+            stolenBall.SetActive(true);
         }
     }
 

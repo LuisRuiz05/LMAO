@@ -7,13 +7,17 @@ public class PoliceSpawner : MonoBehaviour
     public GameObject policePrefab;
     Transform spawn;
     public PlayerHandler player;
-    public int policesRequired = 0;
+    int minimumRequired = 4;
+    public int policesRequired;
     public List<GameObject> policeList = new List<GameObject>();
     bool isChasing = false;
+    bool inPersecution = false;
+    int maxPolicesInSearch = 0;
 
     // Update is called once per frame
     private void Start()
     {
+        policesRequired = minimumRequired;
         spawn = gameObject.transform;
     }
     void Update()
@@ -27,14 +31,18 @@ public class PoliceSpawner : MonoBehaviour
 
     void SpawnPolice()
     {
-        if(player.search < 0) {
-            policesRequired = 0;
+        if(player.search < 50) {
+            policesRequired = minimumRequired;
+            maxPolicesInSearch = 0;
         }
 
-        if (player.search > 0 && player.search < 100) {
-            policesRequired = 1;
-        } else {
-            policesRequired = ((int)player.search / 50);
+        if (player.search >= 50) {
+            if (((int)player.search / 50) > maxPolicesInSearch)
+            {
+                inPersecution = true;
+                maxPolicesInSearch = ((int)player.search / 50);
+            }
+            policesRequired = minimumRequired + maxPolicesInSearch;
         }
 
         if (policeList.Count < policesRequired)
@@ -48,7 +56,16 @@ public class PoliceSpawner : MonoBehaviour
     {
         if (player.search > 0 && !isChasing)
         {
-            player.search -= 1 * Time.deltaTime;
+            if (player.search < 50) {
+                player.search -= 0.5f * Time.deltaTime;
+            }
+            else if (player.search >= 50 && player.search < 225)
+            {
+                player.search -= 4f * Time.deltaTime;
+            } else
+            {
+                player.search -= 7f * Time.deltaTime;
+            }
         }
     }
 
@@ -81,6 +98,11 @@ public class PoliceSpawner : MonoBehaviour
     {
         if (policesRequired < policeList.Count)
         {
+            if (inPersecution)
+            {
+                player.xp += 20;
+            }
+            inPersecution = false;
             Destroy(policeList[0]);
             policeList.RemoveAt(policeList.Count-1);
         }
@@ -88,7 +110,7 @@ public class PoliceSpawner : MonoBehaviour
 
     IEnumerator WaitToRespawn(GameObject police)
     {
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSecondsRealtime(5);
         policeList.Remove(police);
     }
 }
