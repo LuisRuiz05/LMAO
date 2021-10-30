@@ -5,20 +5,19 @@ using UnityEngine;
 public class PoliceSpawner : MonoBehaviour
 {
     public GameObject policePrefab;
-    Transform spawn;
+    public Transform[] masterSpawner;
     public PlayerHandler player;
     int minimumRequired = 4;
     public int policesRequired;
     public List<GameObject> policeList = new List<GameObject>();
     bool isChasing = false;
-    bool inPersecution = false;
+    public bool inPersecution = false;
     int maxPolicesInSearch = 0;
 
     // Update is called once per frame
     private void Start()
     {
         policesRequired = minimumRequired;
-        spawn = gameObject.transform;
     }
     void Update()
     {
@@ -47,7 +46,8 @@ public class PoliceSpawner : MonoBehaviour
 
         if (policeList.Count < policesRequired)
         {
-            GameObject policeClone = Instantiate(policePrefab, spawn);
+            int randomSpawn = Random.Range(0, masterSpawner.Length);
+            GameObject policeClone = Instantiate(policePrefab, masterSpawner[randomSpawn]);
             policeList.Add(policeClone);
         }
     }

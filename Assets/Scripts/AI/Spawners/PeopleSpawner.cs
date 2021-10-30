@@ -6,7 +6,6 @@ public class PeopleSpawner : MonoBehaviour
 {
     public GameObject npc;
     public Transform[] masterSpawner;
-    int peopleInMap = 35;
     public List<GameObject> peopleList = new List<GameObject>();
 
     //Materials
@@ -97,7 +96,7 @@ public class PeopleSpawner : MonoBehaviour
     IEnumerator WaitForRespawn()
     {
         yield return new WaitForSecondsRealtime(3);
-        int randomSpawn = Random.Range(1, masterSpawner.Length);
+        int randomSpawn = Random.Range(0, masterSpawner.Length);
         Spawn(masterSpawner[randomSpawn]);
     }
 }

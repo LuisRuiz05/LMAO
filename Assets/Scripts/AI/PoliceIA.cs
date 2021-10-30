@@ -22,7 +22,6 @@ public class PoliceIA : MonoBehaviour
     public GameObject fx;
 
     int playerSearch = 0;
-    bool isLooking = false;
     public bool isChasing = false;
     bool isAlive = true;
     bool canShoot = true;
@@ -41,7 +40,6 @@ public class PoliceIA : MonoBehaviour
         playerSearch = (int)player.search;
 
         isLookingPlayer();
-        //PeopleBehaviour();
         CheckAlive(npcHealth);
     }
 
@@ -97,7 +95,6 @@ public class PoliceIA : MonoBehaviour
 
         if ((Vector3.Dot(forward, target) < 0.2f && distance <= 30.0f) || distance <= 4f)
         {
-            isLooking = true;
             if (playerSearch >= 50)
             {
                 ChasePlayer(playerPosition, distance);
@@ -108,10 +105,8 @@ public class PoliceIA : MonoBehaviour
         }
         else
         {
-            isLooking = false;
             PeopleBehaviour();
         }
-        //Debug.Log(isLooking);
     }
 
     void ChasePlayer(Vector3 playerPosition, float distance)

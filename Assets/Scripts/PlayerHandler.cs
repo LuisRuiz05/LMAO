@@ -18,11 +18,17 @@ public class PlayerHandler : MonoBehaviour
     public float xp = 0;
     public float intoxication = 0;
     public float search = 0;
-    int level = 1;
+    float maxAnxiety = 100;
+    public int anxiety = 0;
+    int minAnxiety = 15;
+    public int timeForAnxiety = 300;
+
+    public int level = 1;
 
     bool lowingFood = false;
     bool lowingWater = false;
     bool detoxicating = false;
+    bool boostingAnxiety = false;
     bool hasAlly = false;
     
     [SerializeField] private InventoryUI inventoryUI;
@@ -99,14 +105,26 @@ public class PlayerHandler : MonoBehaviour
         {
             intoxication = 0;
         }
+        if (intoxication >= 100)
+        {
+            health -= 100;
+        }
         if (search < 0)
         {
             search = 0;
         } if (search > 550)
         {
             search = 550;
+        } if (anxiety < 0)
+        {
+            anxiety = 0;
+        } 
+        
+        
+        if (anxiety >= maxAnxiety)
+        {
+            health -= 1 * Time.deltaTime;
         }
-
         if (food > 0 && !lowingFood)
         {
             lowingFood = true;
@@ -122,7 +140,13 @@ public class PlayerHandler : MonoBehaviour
             detoxicating = true;
             StartCoroutine(GetIntoxicationDown());
         }
+        if (!boostingAnxiety)
+        {
+            boostingAnxiety = true;
+            StartCoroutine(BoostAnxiety());
+        }
     }
+
     private void CheckStatus()
     {
         healthBar.fillAmount = health / maxHealth;
@@ -159,7 +183,7 @@ public class PlayerHandler : MonoBehaviour
     {
         if (!hasAlly)
         {
-            GameObject ally = Instantiate(allyPrefab);
+            GameObject ally = Instantiate(allyPrefab, new Vector3(transform.position.x, transform.position.y, transform.position.z-2), transform.rotation);
             hasAlly = true;
         }
     }
@@ -171,11 +195,21 @@ public class PlayerHandler : MonoBehaviour
             case Item.ItemType.Beer:
                 intoxication += 5;
                 water -= 2;
+                anxiety -= 8;
+                if (timeForAnxiety > minAnxiety)
+                {
+                    timeForAnxiety -= 1;
+                }
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Beer, amount = 1 });
                 break;
             case Item.ItemType.Drugs:
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
                 intoxication += 15;
+                anxiety -= 20;
+                if (timeForAnxiety > minAnxiety)
+                {
+                    timeForAnxiety -= 3;
+                }
                 break;
             case Item.ItemType.Food:
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
@@ -229,10 +263,18 @@ public class PlayerHandler : MonoBehaviour
         intoxication -= 1;
         detoxicating = false;
     }
+    
+    IEnumerator BoostAnxiety()
+    {
+        yield return new WaitForSecondsRealtime(timeForAnxiety);
+        anxiety += 10;
+        boostingAnxiety = false;
+    }
 
     IEnumerator LoadDeathScreen()
     {
         yield return new WaitForSecondsRealtime(2);
         SceneManager.LoadScene(4);
     }
+
 }

@@ -105,18 +105,31 @@ public class AllyAI : MonoBehaviour
 
     void ChaseEnemy(GameObject enemy, float distance)
     {
-        if (enemy != null && enemy.GetComponent<EnemyAI>().isAlive)
+        if (enemy != null )
         {
-            isChasing = true;
-            animator.SetBool("Walk", false);
-            animator.SetBool("Run", true);
-            nav.enabled = true;
-            nav.SetDestination(enemy.transform.position);
-            nav.speed = 4.2f;
-            nav.stoppingDistance = 0.5f;
-            if (distance <= 12f)
+            EnemyAI enemyAI;
+            enemy.TryGetComponent<EnemyAI>(out enemyAI);
+            EnemyCubeAI enemyCubeAI;
+            enemy.TryGetComponent<EnemyCubeAI>(out enemyCubeAI);
+            DragonAI dragonAI;
+            enemy.TryGetComponent<DragonAI>(out dragonAI);
+
+            if (dragonAI == null)
             {
-                AttackEnemy();
+                if (enemyAI != null || enemyCubeAI != null)
+                {
+                    isChasing = true;
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", true);
+                    nav.enabled = true;
+                    nav.SetDestination(enemy.transform.position);
+                    nav.speed = 4.2f;
+                    nav.stoppingDistance = 0.5f;
+                    if (distance <= 12f)
+                    {
+                        AttackEnemy();
+                    }
+                }
             }
         }
     }
