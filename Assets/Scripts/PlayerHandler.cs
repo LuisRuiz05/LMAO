@@ -21,7 +21,7 @@ public class PlayerHandler : MonoBehaviour
     float maxAnxiety = 100;
     public int anxiety = 0;
     int minAnxiety = 15;
-    public int timeForAnxiety = 300;
+    public int timeForAnxiety = 30;
 
     public int level = 1;
 
@@ -29,16 +29,21 @@ public class PlayerHandler : MonoBehaviour
     bool lowingWater = false;
     bool detoxicating = false;
     bool boostingAnxiety = false;
+    bool healing = false;
     bool hasAlly = false;
+    bool isAlive = true;
     
     [SerializeField] private InventoryUI inventoryUI;
     public ThirdPersonController thirdPersonController;
     public Canvas inventoryUIDisplay;
     public PostProcessVolume drunkFX;
+    LensDistortion drunkDistortion;
     public bool isDrunk = false;
     public bool isOpenInventory = false;
     public bool isTutorial;
     public GameObject allyPrefab;
+    public ParticleSystem blood;
+    SoundFXManager soundFX;
 
     public Inventory inventory;
     public Image foodBar;
@@ -61,9 +66,11 @@ public class PlayerHandler : MonoBehaviour
             isTutorial = false;
         }
 
+        drunkFX.profile.TryGetSettings(out drunkDistortion);
         inventory = new Inventory(UseItem, isTutorial);
         inventoryUI.SetInventory(inventory);
         inventoryUIDisplay.enabled = false;
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
         //ItemWorld.SpawnItemWorld(new Vector3(10, 10), new Item { itemType = Item.ItemType.Drugs, amount = 1 });
     }
 
@@ -72,6 +79,7 @@ public class PlayerHandler : MonoBehaviour
     {
         CheckAlive();
         CheckStatus();
+        CheckPositionInMap();
         UpdateStatus();
 
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -97,9 +105,17 @@ public class PlayerHandler : MonoBehaviour
         {
             food = 100;
         } 
+        if (food <= 0)
+        {
+            health -= 1 * Time.deltaTime;
+        }
         if (water > 100)
         {
             water = 100;
+        }
+        if (water <= 0)
+        {
+            health -= 1 * Time.deltaTime;
         }
         if (intoxication < 0)
         {
@@ -135,6 +151,11 @@ public class PlayerHandler : MonoBehaviour
             lowingWater = true;
             StartCoroutine(GetWaterDown());
         }
+        if (health < 65 && !healing)
+        {
+            healing = true;
+            StartCoroutine(GetHealed());
+        }
         if (intoxication > 0 && !detoxicating)
         {
             detoxicating = true;
@@ -158,6 +179,7 @@ public class PlayerHandler : MonoBehaviour
         {
             isDrunk = true;
             drunkFX.enabled = true;
+            drunkDistortion.intensity.value = -intoxication;
             SpawnAlly();
         }
         else
@@ -170,8 +192,8 @@ public class PlayerHandler : MonoBehaviour
         if (xpBar.fillAmount == 1)
         {
             xp -= maxXP;
+            maxXP += 100;
             level++;
-            maxXP *= 2;
         }
 
         moneyText.text = "$" + money;
@@ -188,13 +210,24 @@ public class PlayerHandler : MonoBehaviour
         }
     }
 
+    void CheckPositionInMap()
+    {
+        Vector3 pos = gameObject.transform.position;
+        if(pos.y < -6)
+        {
+            pos.y = 4;
+            gameObject.transform.position = pos;
+        }
+    }
+
     private void UseItem(Item item)
     {
         switch (item.itemType)
         {
             case Item.ItemType.Beer:
-                intoxication += 5;
-                water -= 2;
+                soundFX.source.PlayOneShot(soundFX.beer);
+                intoxication += 8;
+                water -= 1;
                 anxiety -= 8;
                 if (timeForAnxiety > minAnxiety)
                 {
@@ -205,35 +238,39 @@ public class PlayerHandler : MonoBehaviour
             case Item.ItemType.Drugs:
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Drugs, amount = 1 });
                 intoxication += 15;
-                anxiety -= 20;
+                anxiety -= 25;
                 if (timeForAnxiety > minAnxiety)
                 {
-                    timeForAnxiety -= 3;
+                    timeForAnxiety -= 2;
                 }
                 break;
             case Item.ItemType.Food:
+                soundFX.source.PlayOneShot(soundFX.food);
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Food, amount = 1 });
-                food += 10;
-                intoxication -= 1f;
+                food += 15;
+                intoxication -= 2f;
                 break;
             case Item.ItemType.Gun:
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Gun, amount = 1 });
                 break;
             case Item.ItemType.Water:
+                soundFX.source.PlayOneShot(soundFX.water);
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Water, amount = 1 });
-                water += 10;
-                intoxication -= 2f;
+                water += 15;
+                intoxication -= 4f;
                 break;
             case Item.ItemType.Medkit:
                 inventory.RemoveItem(new Item { itemType = Item.ItemType.Medkit, amount = 1 });
-                health += 10;
+                health += 40;
                 break;
         }
     }
 
     void CheckAlive(){
-        if (health <= 0)
+        if (health <= 0 && isAlive)
         {
+            isAlive = false;
+            soundFX.source.PlayOneShot(soundFX.playersDeath);
             thirdPersonController.Die();
             StartCoroutine(LoadDeathScreen());
         }
@@ -241,25 +278,31 @@ public class PlayerHandler : MonoBehaviour
 
     IEnumerator GetWaterDown()
     {
-        yield return new WaitForSecondsRealtime(30);
+        yield return new WaitForSecondsRealtime(4);
         if (!isDrunk)
         {
             water -= 1;
         } else
         {
-            water -= 3;
+            water -= 2;
         }
         lowingWater = false;
     }
     IEnumerator GetFoodDown()
     {
-        yield return new WaitForSecondsRealtime(40);
+        yield return new WaitForSecondsRealtime(6);
         food -= 1;
         lowingFood = false;
     }
+    IEnumerator GetHealed()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        health += 1;
+        healing = false;
+    }
     IEnumerator GetIntoxicationDown()
     {
-        yield return new WaitForSecondsRealtime(50);
+        yield return new WaitForSecondsRealtime(15);
         intoxication -= 1;
         detoxicating = false;
     }

@@ -8,6 +8,14 @@ public class EnemyCubeAI : MonoBehaviour
     GameObject player;
     PlayerHandler playerHandler;
     public NavMeshAgent nav;
+    public GameObject mini;
+    public enum enemyType
+    {
+        Cyclope,
+        Devil,
+        MiniDevil
+    }
+    public enemyType type;
 
     public int npcHealth = 100;
     public int action;
@@ -15,12 +23,14 @@ public class EnemyCubeAI : MonoBehaviour
     Animator animator;
     public Quaternion angle;
     public float range;
+    SoundFXManager soundFX;
 
     public GameObject fxPoint;
     public GameObject fx;
 
     public bool isAlive = true;
     bool canHit = true;
+    bool hitDelay = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +38,11 @@ public class EnemyCubeAI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerHandler = player.GetComponent<PlayerHandler>();
         animator = GetComponent<Animator>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
+        if (type == enemyType.MiniDevil)
+        {
+            npcHealth = 50;
+        }
     }
 
     // Update is called once per frame
@@ -85,37 +100,59 @@ public class EnemyCubeAI : MonoBehaviour
 
     void ChasePlayer(Vector3 playerPosition)
     {
+        if (isAlive)
+        {
             animator.SetBool("Walk", false);
             animator.SetBool("Run", true);
             nav.enabled = true;
             nav.SetDestination(playerPosition);
             nav.speed = 8;
+        }
     }
 
     void CheckAlive(int health)
     {
-        if (health <= 0)
+        if (health <= 0 && isAlive)
         {
             isAlive = false;
+            soundFX.source.PlayOneShot(soundFX.cubesDeath);
             animator.SetTrigger("Die");
+            nav.speed = 0;
+            nav.acceleration = 0;
             nav.enabled = false;
             StartCoroutine(WaitForDissapear());
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    /*void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (hitDelay)
         {
-            if (canHit)
+            if (collision.gameObject.CompareTag("Player"))
             {
-                animator.SetTrigger("Attack1");
-                playerHandler.health -= 30;
-                canHit = false;
-                StartCoroutine(WaitForHit());
+                if (canHit)
+                {
+                    animator.SetTrigger("Attack1");
+                    if (type != enemyType.MiniDevil)
+                    {
+                        playerHandler.health -= 35;
+                    }
+                    else
+                    {
+                        playerHandler.health -= 15;
+
+                    }
+                    canHit = false;
+                    StartCoroutine(WaitForHit());
+                }
             }
+            hitDelay = false;
         }
-    }
+        else
+        {
+            StartCoroutine(AttackDelay());
+        }
+    }*/
 
     void createFX()
     {
@@ -127,18 +164,56 @@ public class EnemyCubeAI : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            //Get hurt
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 createFX();
                 npcHealth -= 50;
             }
+            //Hit player
+            if (hitDelay)
+            {
+                if (canHit)
+                {
+                    animator.SetTrigger("Attack1");
+                    soundFX.source.PlayOneShot(soundFX.cubesAttack);
+                    if (type != enemyType.MiniDevil)
+                    {
+                        playerHandler.health -= 35;
+                    }
+                    else
+                    {
+                        playerHandler.health -= 15;
+                    }
+                    canHit = false;
+                    StartCoroutine(WaitForHit());
+                }
+                hitDelay = false;
+            }
+            else
+            {
+                StartCoroutine(AttackDelay());
+            }
         }
+    }
+
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSecondsRealtime(3);
+        hitDelay = true;
     }
 
     IEnumerator WaitForDissapear()
     {
         nav.enabled = false;
         yield return new WaitForSecondsRealtime((float)1.8);
+        if (type == enemyType.Devil)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                GameObject miniDevil = Instantiate(mini, new Vector3(transform.position.x, transform.position.y, transform.position.z), transform.rotation);
+            }
+        }
         Destroy(this.gameObject);
         playerHandler.xp += 50;
     }

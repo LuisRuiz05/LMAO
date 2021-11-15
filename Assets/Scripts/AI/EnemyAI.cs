@@ -18,6 +18,7 @@ public class EnemyAI : MonoBehaviour
     public Rigidbody rb;
     public GameObject fxPoint;
     public GameObject fx;
+    SoundFXManager soundFX;
 
     public bool isChasing = false;
     public bool isAlive = true;
@@ -28,6 +29,7 @@ public class EnemyAI : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         nav.enabled = false;
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
     }
 
     // Update is called once per frame
@@ -118,6 +120,7 @@ public class EnemyAI : MonoBehaviour
             nav.speed = 0f;
             nav.acceleration = 0f;
             animator.Play("Shoot");
+            soundFX.source.PlayOneShot(soundFX.shot);
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
             bulletClone.GetComponent<bulletHandler>().isEnemy = true;
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
@@ -145,6 +148,7 @@ public class EnemyAI : MonoBehaviour
                 if (npcHealth > 0)
                 {
                     other.GetComponent<PlayerHandler>().xp += 30;
+                    soundFX.source.PlayOneShot(soundFX.enemysDeath);
                 }
                 npcHealth -= 100;
             }

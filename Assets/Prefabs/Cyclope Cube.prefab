@@ -1135,12 +1135,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nav: {fileID: -7165202331194039144}
+  mini: {fileID: 7656219411647746288, guid: 1761c63620f333041bc6ac0f494f7e5f, type: 3}
+  type: 0
+  npcHealth: 100
   action: 0
   cronometer: 0
   angle: {x: 0, y: 0, z: 0, w: 0}
   range: 0
   fxPoint: {fileID: 2581228617881673121}
-  fx: {fileID: 0}
+  fx: {fileID: 1433806359714068, guid: 7d85d9bff90062d4b9da506a2b20a288, type: 3}
   isAlive: 1
 --- !u!65 &9086396391445446885
 BoxCollider:

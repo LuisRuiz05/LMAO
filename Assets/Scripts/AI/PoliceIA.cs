@@ -20,6 +20,7 @@ public class PoliceIA : MonoBehaviour
     public Rigidbody rb;
     public GameObject fxPoint;
     public GameObject fx;
+    SoundFXManager soundFX;
 
     int playerSearch = 0;
     public bool isChasing = false;
@@ -32,6 +33,7 @@ public class PoliceIA : MonoBehaviour
         player = GameObject.Find("Player").GetComponent<PlayerHandler>();
         animator = GetComponent<Animator>();
         nav.enabled = false;
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
     }
 
     // Update is called once per frame
@@ -45,10 +47,11 @@ public class PoliceIA : MonoBehaviour
 
     void CheckAlive(int health)
     {
-        if (health <= 0)
+        if (health <= 0 && isAlive)
         {
             isAlive = false;
             animator.Play("Die");
+            soundFX.source.PlayOneShot(soundFX.enemysDeath);
             nav.enabled = false;
             StartCoroutine(WaitForDissapear());
         }
@@ -88,24 +91,28 @@ public class PoliceIA : MonoBehaviour
 
     void isLookingPlayer()
     {
-        Vector3 forward = -transform.forward;
-        Vector3 playerPosition = GameObject.Find("Player").transform.position;
-        Vector3 target = (playerPosition - transform.position).normalized;
-        float distance = Vector3.Distance(playerPosition, transform.position);
-
-        if ((Vector3.Dot(forward, target) < 0.2f && distance <= 30.0f) || distance <= 4f)
+        if (isAlive)
         {
-            if (playerSearch >= 50)
+            Vector3 forward = -transform.forward;
+            Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+            Vector3 target = (playerPosition - transform.position).normalized;
+            float distance = Vector3.Distance(playerPosition, transform.position);
+
+            if ((Vector3.Dot(forward, target) < 0.2f && distance <= 30.0f) || distance <= 4f)
             {
-                ChasePlayer(playerPosition, distance);
-            } else
+                if (playerSearch >= 50)
+                {
+                    ChasePlayer(playerPosition, distance);
+                }
+                else
+                {
+                    PeopleBehaviour();
+                }
+            }
+            else
             {
                 PeopleBehaviour();
             }
-        }
-        else
-        {
-            PeopleBehaviour();
         }
     }
 
@@ -137,6 +144,7 @@ public class PoliceIA : MonoBehaviour
             nav.speed = 0f;
             nav.acceleration = 0f;
             animator.Play("Shoot");
+            soundFX.source.PlayOneShot(soundFX.shot);
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
             bulletClone.GetComponent<bulletHandler>().isEnemy = true;
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
@@ -176,7 +184,7 @@ public class PoliceIA : MonoBehaviour
 
     IEnumerator WaitForDissapear()
     {
-        yield return new WaitForSecondsRealtime((float)1.8);
+        yield return new WaitForSecondsRealtime(2);
         Destroy(this.gameObject);
         player.xp += 50;
     }

@@ -18,6 +18,7 @@ public class AllyAI : MonoBehaviour
     public Rigidbody rb;
     public GameObject fxPoint;
     public GameObject fx;
+    SoundFXManager soundFX;
 
     public bool isChasing = false;
     bool canShoot = true;
@@ -30,13 +31,10 @@ public class AllyAI : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         player = GameObject.Find("Player").GetComponent<PlayerHandler>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
         if (GameObject.Find("EnemyGangSpawner"))
         {
             enemyList = GameObject.Find("EnemyGangSpawner").GetComponent<EnemySpawner>().enemyList;
-        }
-        if (GameObject.Find("PoliceSpawner"))
-        {
-            policeList = GameObject.Find("PoliceSpawner").GetComponent<PoliceSpawner>().policeList;
         }
     }
 
@@ -55,7 +53,7 @@ public class AllyAI : MonoBehaviour
             Vector3 playerPosition = GameObject.Find("Player").transform.position;
 
             nav.SetDestination(playerPosition);
-            nav.speed = 3.5f;
+            nav.speed = 4f;
             nav.stoppingDistance = 3f;
             if (nav.velocity.magnitude <= 0)
             {
@@ -123,7 +121,7 @@ public class AllyAI : MonoBehaviour
                     animator.SetBool("Run", true);
                     nav.enabled = true;
                     nav.SetDestination(enemy.transform.position);
-                    nav.speed = 4.2f;
+                    nav.speed = 4.8f;
                     nav.stoppingDistance = 0.5f;
                     if (distance <= 12f)
                     {
@@ -139,6 +137,7 @@ public class AllyAI : MonoBehaviour
         if (canShoot)
         {
             animator.Play("Shoot");
+            soundFX.source.PlayOneShot(soundFX.shot);
             GameObject bulletClone = Instantiate(bullet, bulletTransform);
             Rigidbody rbBulletClone = bulletClone.AddComponent<Rigidbody>();
             bulletClone.GetComponent<bulletHandler>().isEnemy = false;

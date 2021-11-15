@@ -24,7 +24,7 @@ public class ItemWorldSpawner : MonoBehaviour
             case 1: item = new Item { itemType = Item.ItemType.Food, amount = 2 }; break;
             case 2: item = new Item { itemType = Item.ItemType.Food, amount = 1 }; break;
             case 3: item = new Item { itemType = Item.ItemType.Food, amount = 1 }; break;
-            case 4: item = new Item { itemType = Item.ItemType.Food, amount = 1 }; break;
+            case 4: item = new Item { itemType = Item.ItemType.Water, amount = 2 }; break;
             case 5: item = new Item { itemType = Item.ItemType.Water, amount = 1 }; break;
             case 6: item = new Item { itemType = Item.ItemType.Water, amount = 1 }; break;
             case 7: item = new Item { itemType = Item.ItemType.Water, amount = 1 }; break;

@@ -7,7 +7,7 @@ public class PoliceSpawner : MonoBehaviour
     public GameObject policePrefab;
     public Transform[] masterSpawner;
     public PlayerHandler player;
-    int minimumRequired = 4;
+    int minimumRequired = 5;
     public int policesRequired;
     public List<GameObject> policeList = new List<GameObject>();
     bool isChasing = false;
@@ -17,6 +17,7 @@ public class PoliceSpawner : MonoBehaviour
     // Update is called once per frame
     private void Start()
     {
+        FirstSpawn();
         policesRequired = minimumRequired;
     }
     void Update()
@@ -26,6 +27,15 @@ public class PoliceSpawner : MonoBehaviour
         UpdateSearch();
         RespawnPolice();
         DespawnPolice();
+    }
+
+    void FirstSpawn()
+    {
+        foreach (Transform spawn in masterSpawner)
+        {
+            GameObject policeClone = Instantiate(policePrefab, spawn);
+            policeList.Add(policeClone);
+        }
     }
 
     void SpawnPolice()

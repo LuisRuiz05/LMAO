@@ -18,6 +18,7 @@ public class bulletHandler : MonoBehaviour
         if (other.gameObject.CompareTag("Player") && isEnemy)
         {
             player.health -= 30;
+            player.blood.Play();
             Destroy(this.gameObject);
         }
 

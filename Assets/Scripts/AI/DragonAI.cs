@@ -15,15 +15,19 @@ public class DragonAI : MonoBehaviour
     NavMeshAgent nav;
     PlayerHandler playerHandler;
     GameObject player;
+    SoundFXManager soundFX;
 
     bool canFire = true;
     bool isAlive = true;
 
-    int npcHealth = 100;
+    public int health = 100;
     public int action;
     public float cronometer;
     public Quaternion angle;
     public float range;
+
+    public GameObject fxPoint;
+    public GameObject fx;
 
     void Start()
     {
@@ -32,12 +36,31 @@ public class DragonAI : MonoBehaviour
         nav.stoppingDistance = 6f;
         player = GameObject.Find("Player");
         playerHandler = player.GetComponent<PlayerHandler>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
     }
 
     void Update()
     {
+        CheckAlive(health);
         isLookingPlayer();
         Fire();
+    }
+
+    void CheckAlive(int health)
+    {
+        if (health <= 0 && isAlive)
+        {
+            isAlive = false;
+            createFX();
+            soundFX.source.PlayOneShot(soundFX.dragonDeath);
+            Destroy(gameObject);
+        }
+    }
+
+    void createFX()
+    {
+        GameObject createdFX = Instantiate(fx, fxPoint.transform.position, fxPoint.transform.rotation);
+        Destroy(createdFX, 2f);
     }
 
     public void PeopleBehaviour()
@@ -92,6 +115,7 @@ public class DragonAI : MonoBehaviour
     {
         if (canFire)
         {
+            soundFX.source.PlayOneShot(soundFX.dragonFire);
             fireHorizontal.Play();
             fireEmbers.Play();
             smokeCampfire.Play();
@@ -107,7 +131,7 @@ public class DragonAI : MonoBehaviour
         if (collider.CompareTag("Player"))
         {
             if (fireHorizontal.isPlaying) {
-                playerHandler.health -= 1f;
+                playerHandler.health -= 3f * Time.deltaTime;
             }
         }
     }

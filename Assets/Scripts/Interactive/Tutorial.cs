@@ -7,8 +7,11 @@ using UnityEngine.SceneManagement;
 public class Tutorial : MonoBehaviour
 {
     bool pickupBoxes = false;
+
+    bool run = false;
+
     bool openInventory = false;
-    bool buySomething = false;
+    public bool buySomething = false;
     bool getSomeMoney = false;
     bool getHigh = false;
     bool completed = false;
@@ -37,25 +40,28 @@ public class Tutorial : MonoBehaviour
 
     void CheckComplete()
     {
-        if (CheckBoxes())
-        {
-            instructions.text = "Presiona Tab para abrir y cerrar tu inventario \nPara utilizar los objetos de tu inventario, presiona su numero correspondiente";
-            if (CheckOpenInventory())
+        if (CheckBoxes()) {
+            instructions.text = "Presiona SHIFT para correr";
+            if (CheckRun())
             {
-                instructions.text = "Busca a un vendedor (tienen un signo de exclamación en su cabeza), y presiona E para comprar un objeto aleatorio";
-                if (CheckBuy())
+                instructions.text = "Presiona TAB para abrir y cerrar tu inventario \n Para consumir algo de él, presiona la tecla correspondiente";
+                if (CheckOpenInventory())
                 {
-                    instructions.text = "Parece que te has quedado sin dinero, acercate a alguno de los ciudadanos para pedirles limosna o asaltarlos...";
-                    if (CheckGetMoney())
+                    instructions.text = "Busca a un vendedor (tienen un signo de exclamación en su cabeza), y presiona E para comprar un objeto aleatorio";
+                    if (CheckBuy())
                     {
-                        if (!goodLuck)
+                        instructions.text = "Parece que te has quedado sin dinero, acercate a alguno de los ciudadanos para pedirles limosna o asaltarlos...";
+                        if (CheckGetMoney())
                         {
-                            instructions.text = "Sé que debes sentirte un poco solo. Pero si bebes una cerveza o consumes una pastilla, puedes volver a ver algunos de tus amigos";
-                        }
-                        if (CheckIntoxication())
-                        {
-                            instructions.text = "Estás listo para comenzar. Buena suerte!";
-                            completed = true;
+                            if (!goodLuck)
+                            {
+                                instructions.text = "Sé que debes sentirte un poco solo. Pero si bebes una cerveza o consumes una pastilla, puedes volver a ver algunos de tus amigos";
+                            }
+                            if (CheckIntoxication())
+                            {
+                                instructions.text = "Mientras te mantengas en este estado, Cesarín, tu compañero te protegerá\nEstás listo para comenzar. Buena suerte!";
+                                completed = true;
+                            }
                         }
                     }
                 }
@@ -106,6 +112,19 @@ public class Tutorial : MonoBehaviour
         return false;
     }
 
+    bool CheckRun()
+    {
+        if (run)
+        {
+            return true;
+        } if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            run = true;
+            return true;
+        }
+        return false;
+    }
+
     bool CheckOpenInventory()
     {
         if (openInventory)
@@ -126,12 +145,10 @@ public class Tutorial : MonoBehaviour
         {
             return true;
         }
-        if (player.money == 0)
+        else
         {
-            buySomething = true;
-            return true;
+            return false;
         }
-        return false;
     }
 
     bool CheckGetMoney()
@@ -156,7 +173,6 @@ public class Tutorial : MonoBehaviour
         }
         if (player.isDrunk)
         {
-            Debug.Log("Tas ebriaa");
             getHigh = true;
         }
         return false;

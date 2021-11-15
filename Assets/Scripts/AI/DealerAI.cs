@@ -17,10 +17,15 @@ public class DealerAI : MonoBehaviour
     public Quaternion angle;
     public float range;
 
+    Text money;
+    SoundFXManager soundFX;
+
     // Start is called before the first frame update
     void Start()
     {
         text = GameObject.Find("SellerText").GetComponent<Text>();
+        money = GameObject.Find("MoneyChange").GetComponent<Text>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
         dayNight = GameObject.Find("Day/Night Cycle").GetComponent<DayNightCycle>();
         text.enabled = false;
     }
@@ -85,6 +90,10 @@ public class DealerAI : MonoBehaviour
             {
                 if (player.money >= 25)
                 {
+                    soundFX.source.PlayOneShot(soundFX.money);
+                    money.color = Color.red;
+                    money.text = "-$25";
+                    StartCoroutine(ResetText());
                     player.money -= 25;
                     player.xp += 10;
                     itemSpawner.SpawnRandomDrugItem();
@@ -100,5 +109,11 @@ public class DealerAI : MonoBehaviour
             canWalk = true;
             text.enabled = false;
         }
+    }
+
+    IEnumerator ResetText()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        money.text = "";
     }
 }

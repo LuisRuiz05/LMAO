@@ -18,6 +18,9 @@ public class PeopleIA : MonoBehaviour
     public GameObject fxPoint;
     public GameObject fx;
 
+    Text money;
+    SoundFXManager soundFX;
+
     public GameObject availableBall;
     public GameObject givenBall;
     public GameObject stolenBall;
@@ -36,8 +39,10 @@ public class PeopleIA : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player").GetComponent<PlayerHandler>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHandler>();
         preinteraction = GameObject.Find("Preinteraction").GetComponent<Preinteraction>();
+        money = GameObject.Find("MoneyChange").GetComponent<Text>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
         animator = GetComponent<Animator>();
         preinteraction.SetUnactive();
         UpdateNPCState();
@@ -120,6 +125,10 @@ public class PeopleIA : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E) && isAlive && !hasStolen)
             {
                 int given = Random.Range(0, 50);
+                soundFX.source.PlayOneShot(soundFX.money);
+                money.color = Color.green;
+                money.text = "+$"+given;
+                StartCoroutine(ResetText());
                 player.money += given;
                 player.search += Random.Range(15,25);
                 hasStolen = true;
@@ -134,6 +143,10 @@ public class PeopleIA : MonoBehaviour
                 if (!hasGiven && !hasStolen)
                 {
                     int given = Random.Range(0, 4);
+                    soundFX.source.PlayOneShot(soundFX.money);
+                    money.color = Color.green;
+                    money.text = "+$" + given;
+                    StartCoroutine(ResetText());
                     player.money += given;
                     if (given > 0)
                     {
@@ -186,6 +199,12 @@ public class PeopleIA : MonoBehaviour
             givenBall.SetActive(false);
             stolenBall.SetActive(true);
         }
+    }
+
+    IEnumerator ResetText()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        money.text = "";
     }
 
     IEnumerator WaitForGive()

@@ -8,6 +8,7 @@ TagManager:
   - bullet
   - Enemy
   - EnemyMonster
+  - Sound
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Scenario
   - PostProcessing
-  - 
+  - Barriers
   - 
   - 
   - 

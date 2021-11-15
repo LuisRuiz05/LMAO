@@ -113,6 +113,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nav: {fileID: 6704297187419591121}
+  mini: {fileID: 7656219411647746288, guid: 1761c63620f333041bc6ac0f494f7e5f, type: 3}
+  type: 1
+  npcHealth: 100
   action: 0
   cronometer: 0
   angle: {x: 0, y: 0, z: 0, w: 0}

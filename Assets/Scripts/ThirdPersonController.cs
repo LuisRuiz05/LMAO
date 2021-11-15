@@ -13,16 +13,18 @@ public class ThirdPersonController : MonoBehaviour
     bool isAlive = true;
 
     bool isInCorrectPosition = true;
+    bool canKart = true;
     public float speed = 6f;
     public float intoxicatedSpeed = 3.5f;
     public float runSpeed = 9f;
     public float intoxicatedRunSpeed = 6.5f;
+    SoundFXManager soundFX;
+
+    public Transform throwPosition;
+    public GameObject kartXD;
     
-    //
     public float gravity = 9.81f;
     public float jumpHeight = 3.5f;
-    //
-
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
 
@@ -31,10 +33,12 @@ public class ThirdPersonController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        controller = GetComponent<CharacterController>();
+        soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (isAlive)
         {
@@ -99,9 +103,23 @@ public class ThirdPersonController : MonoBehaviour
             }
 
             //Animations
-            if (Input.GetKey(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
                 animator.Play("Punch");
+                soundFX.source.PlayOneShot(soundFX.punch);
+            }
+            if (Input.GetMouseButtonDown(0) && hasEnoughLevels())
+            {
+                if (canKart)
+                {
+                    canKart = false;
+                    GameObject kartClone = Instantiate(kartXD, throwPosition.position, throwPosition.rotation);
+                    Rigidbody rkartClone = kartClone.AddComponent<Rigidbody>();
+
+                    Vector3 angle = kartClone.transform.forward + kartClone.transform.up;
+                    rkartClone.AddForce(angle * 15, ForceMode.Impulse);
+                    StartCoroutine(WaitForNextKart());
+                }
             }
             if (Input.GetKeyDown(KeyCode.B))
             {
@@ -135,12 +153,30 @@ public class ThirdPersonController : MonoBehaviour
         return false;
     }
 
+    bool hasEnoughLevels()
+    {
+        if(player.level >= 16)
+        {
+            return true;
+        }
+        return false;
+    }
+
     IEnumerator FixModelsPostion()
     {
         if (!isInCorrectPosition) {
             yield return new WaitForSecondsRealtime(12);
             modelTransform.localPosition = Vector3.zero;
             isInCorrectPosition = true;
+        }
+    }
+
+    IEnumerator WaitForNextKart()
+    {
+        if (!canKart)
+        {
+            yield return new WaitForSecondsRealtime((float)1.5);
+            canKart = true;
         }
     }
 }
