@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - EnemyMonster
   - Sound
+  - EvilMao
+  - Scenario
+  - Weapon
   layers:
   - Default
   - TransparentFX

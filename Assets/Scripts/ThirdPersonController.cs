@@ -9,7 +9,7 @@ public class ThirdPersonController : MonoBehaviour
     public CharacterController controller;
     public Transform mainCamera;
     Animator animator;
-    Vector3 falling = new Vector3(0f,0f,0f);
+    public Vector3 falling = new Vector3(0f,0f,0f);
     bool isAlive = true;
 
     bool isInCorrectPosition = true;

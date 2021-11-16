@@ -14,15 +14,26 @@ public class kartHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject);
         if (collision.gameObject.CompareTag("EnemyMonster"))
         {
-            Debug.Log("Hit!");
             DragonAI dragon;
+
             collision.gameObject.TryGetComponent<DragonAI>(out dragon);
-            if(dragon != null)
+
+            if (dragon != null)
             {
                 dragon.health -= 50;
+            }
+        }
+        if (collision.gameObject.CompareTag("EvilMao"))
+        {
+            EvilMaoAI evilMao;
+
+            collision.gameObject.TryGetComponent<EvilMaoAI>(out evilMao);
+
+            if (evilMao != null)
+            {
+                evilMao.health -= 50;
             }
         }
     }

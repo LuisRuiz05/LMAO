@@ -51,6 +51,7 @@ public class DragonAI : MonoBehaviour
         if (health <= 0 && isAlive)
         {
             isAlive = false;
+            playerHandler.xp += 50;
             createFX();
             soundFX.source.PlayOneShot(soundFX.dragonDeath);
             Destroy(gameObject);
@@ -131,7 +132,7 @@ public class DragonAI : MonoBehaviour
         if (collider.CompareTag("Player"))
         {
             if (fireHorizontal.isPlaying) {
-                playerHandler.health -= 3f * Time.deltaTime;
+                playerHandler.health -= 7f * Time.deltaTime;
             }
         }
     }

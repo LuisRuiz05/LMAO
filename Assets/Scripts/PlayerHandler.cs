@@ -192,7 +192,7 @@ public class PlayerHandler : MonoBehaviour
         if (xpBar.fillAmount == 1)
         {
             xp -= maxXP;
-            maxXP += 100;
+            maxXP += 25;
             level++;
         }
 
@@ -278,7 +278,7 @@ public class PlayerHandler : MonoBehaviour
 
     IEnumerator GetWaterDown()
     {
-        yield return new WaitForSecondsRealtime(4);
+        yield return new WaitForSecondsRealtime(5);
         if (!isDrunk)
         {
             water -= 1;
