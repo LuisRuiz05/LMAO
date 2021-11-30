@@ -32,6 +32,7 @@ public class PlayerHandler : MonoBehaviour
     bool healing = false;
     bool hasAlly = false;
     bool isAlive = true;
+    public bool hasKilledEvilMao = false;
     
     [SerializeField] private InventoryUI inventoryUI;
     public ThirdPersonController thirdPersonController;

@@ -39,6 +39,7 @@ public class EvilMaoAI : MonoBehaviour
     {
         if (health <= 0 && isAlive)
         {
+            playerHandler.hasKilledEvilMao = true;
             isAlive = false;
             soundFX.source.PlayOneShot(soundFX.cubesDeath);
             animator.SetBool("Walk", false);

@@ -114,13 +114,17 @@ public class EnemySpawner : MonoBehaviour
             {
                 return cyclopeCube;
             }
-            if (randomEnemy == 8 || randomEnemy == 9)
+            if (randomEnemy == 8 || randomEnemy == 10)
             {
                 return devilCube;
             }
-            else
+            if (randomEnemy == 9)
             {
                 return dragon;
+            }
+            else
+            {
+                return enemy;
             }
         }
     }
