@@ -98,7 +98,10 @@ public class PlayerHandler : MonoBehaviour
                 isOpenInventory = true;
             }
         }
-
+        //if (Input.GetKeyDown(KeyCode.Period))
+        //{
+        //    level++;
+        //}
     }
     void UpdateStatus()
     {

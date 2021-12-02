@@ -33,7 +33,7 @@ public class kartHandler : MonoBehaviour
 
             if (evilMao != null)
             {
-                evilMao.health -= 5000;
+                evilMao.health -= 50;
             }
         }
     }
