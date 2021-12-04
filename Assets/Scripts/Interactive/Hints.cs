@@ -52,7 +52,7 @@ public class Hints : MonoBehaviour
         }
         if (!hasLearnedKarting)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && player.level >= 16)
             {
                 hasLearnedKarting = true;
                 canvasScript.SetUnactive();

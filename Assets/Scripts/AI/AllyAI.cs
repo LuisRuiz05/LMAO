@@ -23,8 +23,7 @@ public class AllyAI : MonoBehaviour
     public bool isChasing = false;
     bool canShoot = true;
     bool isChasingEnemy = false;
-    List<GameObject> enemyList = new List<GameObject>();
-    List<GameObject> policeList = new List<GameObject>();
+    [SerializeField]List<GameObject> enemyList = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +31,9 @@ public class AllyAI : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GameObject.Find("Player").GetComponent<PlayerHandler>();
         soundFX = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundFXManager>();
-        if (GameObject.Find("EnemyGangSpawner"))
+        if (GameObject.Find("EnemySpawner"))
         {
-            enemyList = GameObject.Find("EnemyGangSpawner").GetComponent<EnemySpawner>().enemyList;
+            enemyList = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().enemyList;
         }
     }
 
